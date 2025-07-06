@@ -27,15 +27,16 @@ jobs:
         pip install pyinstaller
 
     - name: Create version.txt dynamically
+      shell: bash
       run: |
-        $ver = "${{ github.event.inputs.version }}".TrimStart("v")
-        $parts = $ver.Split(".")
-        $versionTuple = "$($parts[0]), $($parts[1]), $($parts[2]), 0"
-        Set-Content -Path version.txt -Value @"
+        version="${{ github.event.inputs.version }}"
+        ver_tuple=$(echo "$version" | sed 's/^v//' | sed 's/\./, /g'), 0
+
+        cat <<EOF > version.txt
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=($versionTuple),
-    prodvers=($versionTuple),
+    filevers=($ver_tuple),
+    prodvers=($ver_tuple),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -61,7 +62,7 @@ VSVersionInfo(
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
   ]
 )
-"@
+EOF
 
     - name: Build executable
       run: |
