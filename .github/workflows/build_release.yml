@@ -86,7 +86,7 @@ jobs:
       shell: bash
       run: |
         VERSION="${{ steps.get_build_version.outputs.full_version }}"
-        BUILD_DIR="dist/UOCrafter_work" 
+        BUILD_DIR="dist/UOCrafter" 
         ZIP_FILE="UOCrafter-${VERSION}.zip"
         
         # Przechodzimy do katalogu z buildem
