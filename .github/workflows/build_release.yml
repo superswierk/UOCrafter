@@ -75,6 +75,7 @@ jobs:
         echo ")" >> version.txt
 
     - name: Build executable with PyInstaller (onedir)
+      shell: bash # <--- DODANO TĘ LINIĘ
       run: |
         pyinstaller --onedir --windowed --icon=icon.ico --version-file=version.txt UOCrafter_work.py \
         --hidden-import=PyQt6.QtCore \
@@ -85,16 +86,13 @@ jobs:
       shell: bash
       run: |
         VERSION="${{ steps.get_build_version.outputs.full_version }}"
-        BUILD_DIR="dist/UOCrafter_work" # Zmieniono nazwę folderu na UOCrafter_work
+        BUILD_DIR="dist/UOCrafter_work" 
         ZIP_FILE="UOCrafter-${VERSION}.zip"
         
         # Przechodzimy do katalogu z buildem
         cd "${BUILD_DIR}"
-        # Spakuj całą zawartość bieżącego katalogu (czyli zawartość dist/UOCrafter_work)
-        # bezpośrednio do pliku ZIP, który zostanie utworzony w katalogu głównym repozytorium.
         "C:/Program Files/7-Zip/7z.exe" a -tzip "${GITHUB_WORKSPACE}/${ZIP_FILE}" ./*
 
-    # Krok do debugowania - sprawdź, czy plik ZIP istnieje w głównym katalogu
     - name: List files in root directory for debugging
       run: ls -l
       shell: bash
