@@ -69,7 +69,7 @@ jobs:
         pyinstaller --onefile --windowed --icon=icon.ico --version-file=version.txt UOCrafter.py
 
     - name: Create ZIP archive
-      shell: bash
+      shell: bash # Keep bash shell for easier path handling and variable use
       run: |
         VERSION="${{ github.event.inputs.version }}"
         ZIP_FILE="UOCrafter-${VERSION}.zip"
@@ -77,7 +77,10 @@ jobs:
         mkdir -p release_archive
         mv dist/UOCrafter.exe release_archive/UOCrafter.exe
         
-        zip -j "${ZIP_FILE}" release_archive/*
+        # Use 7z to create the zip file
+        # 'a' for add to archive, '-tzip' for zip type, '-mx=9' for max compression
+        # This will create ZIP_FILE in the current working directory, containing 'UOCrafter.exe' directly
+        "C:/Program Files/7-Zip/7z.exe" a -tzip "${ZIP_FILE}" ./release_archive/UOCrafter.exe
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
