@@ -68,6 +68,17 @@ jobs:
       run: |
         pyinstaller --onefile --windowed --icon=icon.ico --version-file=version.txt UOCrafter.py
 
+    - name: Create ZIP archive
+      shell: bash
+      run: |
+        VERSION="${{ github.event.inputs.version }}"
+        ZIP_FILE="UOCrafter-${VERSION}.zip"
+        
+        mkdir -p release_archive
+        mv dist/UOCrafter.exe release_archive/UOCrafter.exe
+        
+        zip -j "${ZIP_FILE}" release_archive/*
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
@@ -78,10 +89,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload EXE to Release
+    - name: Upload ZIP to Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.event.inputs.version }}
-        files: dist/UOCrafter.exe
+        files: UOCrafter-${{ github.event.inputs.version }}.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
