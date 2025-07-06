@@ -29,7 +29,8 @@ jobs:
         pip install pyinstaller
 
     - name: Get Build Version
-      id: get_build_version # Dodajemy ID do tego kroku, aby móc odwołać się do jego wyjścia
+      id: get_build_version
+      shell: bash 
       run: |
         BASE_VERSION="${{ github.event.inputs.version }}"
         BUILD_NUMBER="${{ github.run_number }}"
