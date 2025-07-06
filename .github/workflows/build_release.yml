@@ -29,7 +29,7 @@ jobs:
       shell: bash
       run: |
         version="${{ github.event.inputs.version }}"
-        ver_nums=$(echo "$version" | sed 's/^v//' | sed 's/\\./, /g'; echo ", 0")
+        ver_nums=$(echo "$version" | sed 's/^v//' | awk -F. '{printf "%d, %d, %d, 0", $1, $2, $3}')
 
         echo "VSVersionInfo(" > version.txt
         echo "  ffi=FixedFileInfo(" >> version.txt
