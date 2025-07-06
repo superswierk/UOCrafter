@@ -85,12 +85,15 @@ jobs:
         BUILD_DIR="dist/UOCrafter" 
         ZIP_FILE="UOCrafter-${VERSION}.zip"
         
-        # Przejdź do katalogu wynikowego PyInstallera
-        cd "${BUILD_DIR}"
-        
-        # Spakuj całą zawartość bieżącego katalogu do ZIPa
-        # Używamy "../../../" aby wskazać ścieżkę do katalogu głównego repozytorium
-        "C:/Program Files/7-Zip/7z.exe" a -tzip "../../../${ZIP_FILE}" ./*
+        # Spakuj zawartość katalogu BUILD_DIR bezpośrednio do pliku ZIP w katalogu głównym
+        # Używamy pełnej ścieżki do plików wewnątrz BUILD_DIR, aby zachować ich strukturę
+        # wewnątrz ZIPa, ale sam ZIP jest tworzony w bieżącym katalogu (repozytorium root).
+        "C:/Program Files/7-Zip/7z.exe" a -tzip "${ZIP_FILE}" "${BUILD_DIR}"/*
+
+    # Krok do debugowania - sprawdź, czy plik ZIP istnieje w głównym katalogu
+    - name: List files in root directory for debugging
+      run: ls -l
+      shell: bash
 
     - name: Create GitHub Release and Upload ZIP
       uses: softprops/action-gh-release@v2
