@@ -24,9 +24,9 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install dependencies (py2exe)
+    - name: Install dependencies (PyInstaller)
       run: |
-        pip install py2exe
+        pip install pyinstaller # <-- Zmieniamy z powrotem na PyInstaller
 
     - name: Get Build Version
       id: get_build_version
@@ -38,28 +38,57 @@ jobs:
         echo "Release tag will be: $FULL_VERSION"
         echo "full_version=$FULL_VERSION" >> $GITHUB_OUTPUT
 
-    # Krok Create version.txt dynamically jest usunięty,
-    # ponieważ informacje o wersji są teraz w setup.py
-
-    - name: Build executable with py2exe
+    - name: Create version.txt dynamically # <-- Ten krok wraca
+      shell: bash
       run: |
-        # Używamy pełnej wersji z poprzedniego kroku i przekazujemy ją do setup.py
-        # za pomocą zmiennej środowiskowej lub jako argument
-        # Tutaj przekazujemy jako argument, który potem setup.py odczytuje
-        python setup.py py2exe --version-build "${{ steps.get_build_version.outputs.full_version }}"
+        version="${{ steps.get_build_version.outputs.full_version }}"
+        ver_nums=$(echo "$version" | sed 's/^v//' | awk -F. '{printf "%d, %d, %d, %d", $1, $2, $3, $4}')
 
-    - name: Create ZIP archive
+        echo "VSVersionInfo(" > version.txt
+        echo "  ffi=FixedFileInfo(" >> version.txt
+        echo "    filevers=($ver_nums)," >> version.txt
+        echo "    prodvers=($ver_nums)," >> version.txt
+        echo "    mask=0x3f," >> version.txt
+        echo "    flags=0x0," >> version.txt
+        echo "    OS=0x40004," >> version.txt
+        echo "    fileType=0x1," >> version.txt
+        echo "    subtype=0x0," >> version.txt
+        echo "    date=(0, 0)" >> version.txt
+        echo "  )," >> version.txt
+        echo "  kids=[" >> version.txt
+        echo "    StringFileInfo([" >> version.txt
+        echo "      StringTable(" >> version.txt
+        echo "        '040904B0'," >> version.txt
+        echo "        [" >> version.txt
+        echo "          StringStruct('CompanyName', 'RichRichie')," >> version.txt
+        echo "          StringStruct('FileDescription', 'UOCrafter GUI Tool')," >> version.txt
+        echo "          StringStruct('FileVersion', '$version')," >> version.txt
+        echo "          StringStruct('InternalName', 'UOCrafter')," >> version.txt
+        echo "          StringStruct('OriginalFilename', 'UOCrafter.exe')," >> version.txt
+        echo "          StringStruct('ProductName', 'UOCrafter Crafting Assistant')," >> version.txt
+        echo "          StringStruct('ProductVersion', '$version')" >> version.txt
+        echo "        ]" >> version.txt
+        echo "      )" >> version.txt
+        echo "    ])," >> version.txt
+        echo "    VarFileInfo([VarStruct('Translation', [1033, 1200])])" >> version.txt
+        echo "  ]" >> version.txt
+        echo ")" >> version.txt
+
+    - name: Build executable with PyInstaller (onedir)
+      run: |
+        pyinstaller --onedir --windowed --icon=icon.ico --version-file=version.txt UOCrafter.py # <-- Zmieniamy na --onedir
+
+    - name: Create ZIP archive for onedir build
       shell: bash
       run: |
         VERSION="${{ steps.get_build_version.outputs.full_version }}"
-        ZIP_FILE="UOCrafter-${VERSION}.zip"
+        # Nazwa katalogu wyjściowego z PyInstallera (domyślnie 'UOCrafter' lub nazwa skryptu)
+        BUILD_DIR="dist/UOCrafter" 
+        ZIP_FILE="UOCrafter-${VERSION}-onedir.zip" # <-- Zmieniamy nazwę ZIPa, by odzwierciedlić onedir
         
-        # py2exe domyślnie tworzy pliki w katalogu 'dist_py2exe' (zgodnie z setup.py)
-        # i umieszcza EXE bezpośrednio w nim, bez podkatalogu dla głównego skryptu.
-        mkdir -p release_archive
-        mv dist_py2exe/UOCrafter.exe release_archive/UOCrafter.exe
-        
-        "C:/Program Files/7-Zip/7z.exe" a -tzip "${ZIP_FILE}" ./release_archive/UOCrafter.exe
+        # Tworzymy archiwum ZIP z całym katalogiem wynikowym
+        # 7z doda katalog 'UOCrafter' do archiwum ZIP
+        "C:/Program Files/7-Zip/7z.exe" a -tzip "${ZIP_FILE}" "${BUILD_DIR}"/* # <-- Pakujemy cały katalog
 
     - name: Create GitHub Release and Upload ZIP
       uses: softprops/action-gh-release@v2
@@ -68,6 +97,6 @@ jobs:
         name: "UOCrafter ${{ steps.get_build_version.outputs.full_version }}"
         draft: false
         prerelease: false
-        files: UOCrafter-${{ steps.get_build_version.outputs.full_version }}.zip
+        files: UOCrafter-${{ steps.get_build_version.outputs.full_version }}-onedir.zip # <-- Aktualizujemy nazwę pliku do uploadu
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
