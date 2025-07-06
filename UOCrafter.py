@@ -106,24 +106,41 @@ class ShoppingListApp(QWidget):
         if category is None:
             category = self._get_current_category()
         file_name = f"crafter_list_data_{category}.json"
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        return os.path.join(script_dir, file_name)
+
+        if getattr(sys, 'frozen', False):
+            base_dir = os.path.dirname(sys.executable)  # dla .exe
+        else:
+            base_dir = os.path.dirname(os.path.abspath(__file__))  # dla .py
+
+        return os.path.join(base_dir, file_name)
 
     def _get_progress_file_path(self, category=None):
         """Zwraca pelna sciezke do pliku postepu dla podanej kategorii lub aktualnej."""
         if category is None:
             category = self._get_current_category()
         file_name = f"craft_ItemList_{category}.progress"
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        return os.path.join(script_dir, file_name)
+
+        if getattr(sys, 'frozen', False):
+            base_dir = os.path.dirname(sys.executable)  # dla .exe
+        else:
+            base_dir = os.path.dirname(os.path.abspath(__file__))  # dla .py
+
+        return os.path.join(base_dir, file_name)
+
 
     def _get_export_file_path(self, category=None):
         """Zwraca pelna sciezke do pliku eksportu TXT dla podanej kategorii lub aktualnej."""
         if category is None:
             category = self._get_current_category()
         file_name = f"craft_ItemList_{category}.txt"
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        return os.path.join(script_dir, file_name)
+
+        if getattr(sys, 'frozen', False):
+            base_dir = os.path.dirname(sys.executable)  # dla .exe
+        else:
+            base_dir = os.path.dirname(os.path.abspath(__file__))  # dla .py
+
+        return os.path.join(base_dir, file_name)
+
 
     def initUI(self):
         # Ustawienia okna glownego
