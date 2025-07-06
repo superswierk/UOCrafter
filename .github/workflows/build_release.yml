@@ -1,0 +1,85 @@
+
+name: Build and Release EXE
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. v0.3.0)'
+        required: true
+        default: 'v0.2.0'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install pyinstaller
+
+    - name: Create version.txt dynamically
+      run: |
+        $ver = "${{ github.event.inputs.version }}".TrimStart("v")
+        $parts = $ver.Split(".")
+        $versionTuple = "$($parts[0]), $($parts[1]), $($parts[2]), 0"
+        Set-Content -Path version.txt -Value @"
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=($versionTuple),
+    prodvers=($versionTuple),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo([
+      StringTable(
+        '040904B0',
+        [
+          StringStruct('CompanyName', 'RichRichie'),
+          StringStruct('FileDescription', 'UOCrafter GUI Tool'),
+          StringStruct('FileVersion', '${{ github.event.inputs.version }}'),
+          StringStruct('InternalName', 'UOCrafter'),
+          StringStruct('OriginalFilename', 'UOCrafter.exe'),
+          StringStruct('ProductName', 'UOCrafter Crafting Assistant'),
+          StringStruct('ProductVersion', '${{ github.event.inputs.version }}')
+        ]
+      )
+    ]),
+    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+  ]
+)
+"@
+
+    - name: Build executable
+      run: |
+        pyinstaller --onefile --windowed --icon=icon.ico --version-file=version.txt UOCrafter.py
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.event.inputs.version }}
+        name: "UOCrafter ${{ github.event.inputs.version }}"
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload EXE to Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/UOCrafter.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
