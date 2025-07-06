@@ -30,30 +30,19 @@ jobs:
 
     - name: Get Build Version
       id: get_build_version
-      shell: bash 
+      shell: bash
       run: |
         BASE_VERSION="${{ github.event.inputs.version }}"
         BUILD_NUMBER="${{ github.run_number }}"
         FULL_VERSION="${BASE_VERSION}.${BUILD_NUMBER}"
         echo "Release tag will be: $FULL_VERSION"
-        echo "full_version=$FULL_VERSION" >> $GITHUB_OUTPUT # Ustawiamy zmienną wyjściową
+        echo "full_version=$FULL_VERSION" >> $GITHUB_OUTPUT
 
     - name: Create version.txt dynamically
       shell: bash
       run: |
-        # Używamy pełnej wersji z poprzedniego kroku
         version="${{ steps.get_build_version.outputs.full_version }}"
-        
-        # Usuwamy 'v' z początku, jeśli istnieje, dla numeracji w pliku wersji
-        # Następnie dzielimy na części. Dla formatu vX.Y.Z.BUILD, potrzebujemy X, Y, Z.
-        # Numer BUILD jest pomijany w filevers/prodvers dla struktury WinAPI,
-        # ale możesz go dodać jako ostatnią cyfrę jeśli struktura X.Y.Z.BUILD pasuje
-        # do Twoich wymagań dla VSVersionInfo. W przykładzie zakładam X.Y.Z, a BUILD jako Revision.
-        
-        # Poniżej zmodyfikowałem, aby uwzględniało 4 segmenty dla filevers/prodvers
-        # jeśli version będzie np. v0.2.1.123
         ver_nums=$(echo "$version" | sed 's/^v//' | awk -F. '{printf "%d, %d, %d, %d", $1, $2, $3, $4}')
-
 
         echo "VSVersionInfo(" > version.txt
         echo "  ffi=FixedFileInfo(" >> version.txt
@@ -92,7 +81,7 @@ jobs:
     - name: Create ZIP archive
       shell: bash
       run: |
-        VERSION="${{ steps.get_build_version.outputs.full_version }}" # Używamy pełnej wersji dla nazwy ZIPa
+        VERSION="${{ steps.get_build_version.outputs.full_version }}"
         ZIP_FILE="UOCrafter-${VERSION}.zip"
         
         mkdir -p release_archive
@@ -100,20 +89,13 @@ jobs:
         
         "C:/Program Files/7-Zip/7z.exe" a -tzip "${ZIP_FILE}" ./release_archive/UOCrafter.exe
 
-    - name: Create GitHub Release
+    - name: Create GitHub Release and Upload ZIP
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ steps.get_build_version.outputs.full_version }} # Używamy pełnej wersji jako tagu
-        name: "UOCrafter ${{ steps.get_build_version.outputs.full_version }}" # Używamy pełnej wersji w nazwie wydania
+        tag_name: ${{ steps.get_build_version.outputs.full_version }}
+        name: "UOCrafter ${{ steps.get_build_version.outputs.full_version }}"
         draft: false
         prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload ZIP to Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ steps.get_build_version.outputs.full_version }} # Używamy pełnej wersji jako tagu
-        files: UOCrafter-${{ steps.get_build_version.outputs.full_version }}.zip # Używamy pełnej wersji dla nazwy pliku ZIP
+        files: UOCrafter-${{ steps.get_build_version.outputs.full_version }}.zip # <-- Dodano to tutaj!
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
