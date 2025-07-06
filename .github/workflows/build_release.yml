@@ -42,6 +42,7 @@ jobs:
       shell: bash
       run: |
         version="${{ steps.get_build_version.outputs.full_version }}"
+        # Upewniamy się, że format wersji jest zgodny z oczekiwaniami PyInstallera
         ver_nums=$(echo "$version" | sed 's/^v//' | awk -F. '{printf "%d, %d, %d, %d", $1, $2, $3, $4}')
 
         echo "VSVersionInfo(" > version.txt
@@ -82,13 +83,16 @@ jobs:
       shell: bash
       run: |
         VERSION="${{ steps.get_build_version.outputs.full_version }}"
-        BUILD_DIR="dist/UOCrafter" 
+        BUILD_DIR="dist/UOCrafter" # To jest domyślny katalog wynikowy dla --onedir
         ZIP_FILE="UOCrafter-${VERSION}.zip"
         
-        # Spakuj zawartość katalogu BUILD_DIR bezpośrednio do pliku ZIP w katalogu głównym
-        # Używamy pełnej ścieżki do plików wewnątrz BUILD_DIR, aby zachować ich strukturę
-        # wewnątrz ZIPa, ale sam ZIP jest tworzony w bieżącym katalogu (repozytorium root).
-        "C:/Program Files/7-Zip/7z.exe" a -tzip "${ZIP_FILE}" "${BUILD_DIR}"/*
+        # Przechodzimy do katalogu z buildem
+        cd "${BUILD_DIR}"
+        # Spakuj całą zawartość bieżącego katalogu (czyli zawartość dist/UOCrafter)
+        # bezpośrednio do pliku ZIP, który zostanie utworzony w katalogu głównym repozytorium.
+        # Używamy zmiennej środowiskowej GITHUB_WORKSPACE, aby upewnić się,
+        # że ZIP jest tworzony w korzeniu, niezależnie od bieżącego katalogu roboczego.
+        "C:/Program Files/7-Zip/7z.exe" a -tzip "${GITHUB_WORKSPACE}/${ZIP_FILE}" ./*
 
     # Krok do debugowania - sprawdź, czy plik ZIP istnieje w głównym katalogu
     - name: List files in root directory for debugging
