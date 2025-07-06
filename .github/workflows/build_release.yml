@@ -26,7 +26,7 @@ jobs:
 
     - name: Install dependencies (PyInstaller)
       run: |
-        pip install pyinstaller # <-- Zmieniamy z powrotem na PyInstaller
+        pip install pyinstaller
 
     - name: Get Build Version
       id: get_build_version
@@ -38,7 +38,7 @@ jobs:
         echo "Release tag will be: $FULL_VERSION"
         echo "full_version=$FULL_VERSION" >> $GITHUB_OUTPUT
 
-    - name: Create version.txt dynamically # <-- Ten krok wraca
+    - name: Create version.txt dynamically
       shell: bash
       run: |
         version="${{ steps.get_build_version.outputs.full_version }}"
@@ -76,19 +76,21 @@ jobs:
 
     - name: Build executable with PyInstaller (onedir)
       run: |
-        pyinstaller --onedir --windowed --icon=icon.ico --version-file=version.txt UOCrafter.py # <-- Zmieniamy na --onedir
+        pyinstaller --onedir --windowed --icon=icon.ico --version-file=version.txt UOCrafter.py --hidden-import=PyQt6
 
-    - name: Create ZIP archive for onedir build
+    - name: Create ZIP archive
       shell: bash
       run: |
         VERSION="${{ steps.get_build_version.outputs.full_version }}"
-        # Nazwa katalogu wyjściowego z PyInstallera (domyślnie 'UOCrafter' lub nazwa skryptu)
         BUILD_DIR="dist/UOCrafter" 
-        ZIP_FILE="UOCrafter-${VERSION}-onedir.zip" # <-- Zmieniamy nazwę ZIPa, by odzwierciedlić onedir
+        ZIP_FILE="UOCrafter-${VERSION}.zip"
         
-        # Tworzymy archiwum ZIP z całym katalogiem wynikowym
-        # 7z doda katalog 'UOCrafter' do archiwum ZIP
-        "C:/Program Files/7-Zip/7z.exe" a -tzip "${ZIP_FILE}" "${BUILD_DIR}"/* # <-- Pakujemy cały katalog
+        # Przejdź do katalogu wynikowego PyInstallera
+        cd "${BUILD_DIR}"
+        
+        # Spakuj całą zawartość bieżącego katalogu do ZIPa
+        # Używamy "../../../" aby wskazać ścieżkę do katalogu głównego repozytorium
+        "C:/Program Files/7-Zip/7z.exe" a -tzip "../../../${ZIP_FILE}" ./*
 
     - name: Create GitHub Release and Upload ZIP
       uses: softprops/action-gh-release@v2
@@ -97,6 +99,6 @@ jobs:
         name: "UOCrafter ${{ steps.get_build_version.outputs.full_version }}"
         draft: false
         prerelease: false
-        files: UOCrafter-${{ steps.get_build_version.outputs.full_version }}-onedir.zip # <-- Aktualizujemy nazwę pliku do uploadu
+        files: UOCrafter-${{ steps.get_build_version.outputs.full_version }}.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
