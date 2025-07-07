@@ -65,6 +65,10 @@ class ShoppingListApp(QWidget):
             "krasno_kusza": {"sztaby": 0, "deski": 14, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "krasno_ciezka_kusza": {"sztaby": 0, "deski": 20, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "strzaly": {"sztaby": 0, "deski": 1, "klejnoty": 0, "tkanina": 0, "skora": 0}
+        },
+        "Krawiectwo": { # Nowa kategoria
+            "czapka": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 2, "skora": 0},
+            "skorzana_czapka": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 2}
         }
     }
 
@@ -159,6 +163,7 @@ class ShoppingListApp(QWidget):
         category_selection_layout = QHBoxLayout()
         category_selection_layout.addWidget(QLabel("Wybierz kategorie:"))
         self.category_combo = QComboBox(self)
+        # Aktualizacja listy kategorii
         self.category_combo.addItems(list(self.CRAFTING_RESOURCES.keys()))
         # Po zmianie kategorii, wywolaj update_item_combo, ktory zajmie sie zapisem/odczytem
         self.category_combo.currentIndexChanged.connect(self.update_item_combo)
