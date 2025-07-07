@@ -12,59 +12,59 @@ class ShoppingListApp(QWidget):
     # Slownik definiujacy zasoby potrzebne do wytworzenia kazdego artykulu, teraz z kategoriami
     CRAFTING_RESOURCES = {
         "Druciarstwo": {
-            "tworzenie_lukuw": {"sztaby": 4, "deski": 2, "klejnoty": 0},
-            "mlotek_kowalski": {"sztaby": 5, "deski": 0, "klejnoty": 0},
-            "mlot_kowalski": {"sztaby": 5, "deski": 0, "klejnoty": 0},
-            "wytrych": {"sztaby": 1, "deski": 0, "klejnoty": 0}, # Przyklad: wytrych nie wymaga sztab
-            "kilof": {"sztaby": 5, "deski": 0, "klejnoty": 0},   # Przyklad: kilof nie wymaga desek
-            "sierp": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "mozdzierz": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "narzedzie_szklarskie": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "narzedzia_naprawcze": {"sztaby": 2, "deski": 0, "klejnoty": 0},
-            "narzedzia_druciarza": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "narzedzia_szewskie": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "pila": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "dluto": {"sztaby": 2, "deski": 4, "klejnoty": 0},
-            "kolczyki": {"sztaby": 1, "deski": 0, "klejnoty": 1},
-            "zloty_naszyjnik": {"sztaby": 1, "deski": 0, "klejnoty": 1},
-            "szpony": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "tekagi": {"sztaby": 6, "deski": 0, "klejnoty": 0},
-            "ciemne_jingasa": {"sztaby": 12, "deski": 0, "klejnoty": 0},
-            "plytowe_jingasa": {"sztaby": 9, "deski": 0, "klejnoty": 0},
-            "diadem": {"sztaby": 4, "deski": 0, "klejnoty": 10},
-            "swiecznikA": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "swiecznikB": {"sztaby": 15, "deski": 0, "klejnoty": 0},
-            "swieczka": {"sztaby": 2, "deski": 0, "klejnoty": 0},
-            "waga": {"sztaby": 5, "deski": 0, "klejnoty": 0},
-            "lichtarzykA": {"sztaby": 5, "deski": 0, "klejnoty": 0},
-            "lichtarzykB": {"sztaby": 5, "deski": 0, "klejnoty": 0},
-            "luneta": {"sztaby": 4, "deski": 0, "klejnoty": 0},
-            "bola": {"sztaby": 2, "deski": 0, "klejnoty": 0},
-            "czesci_do_zegara": {"sztaby": 1, "deski": 0, "klejnoty": 0},
-            "kurek_do_beczki": {"sztaby": 1, "deski": 0, "klejnoty": 0},
-            "obrecz": {"sztaby": 5, "deski": 0, "klejnoty": 0},
-            "narzedzia_stolarskie": {"sztaby": 0, "deski": 4, "klejnoty": 0},
-            "globus": {"sztaby": 0, "deski": 5, "klejnoty": 0},
-            "paleta": {"sztaby": 0, "deski": 4, "klejnoty": 0},
-            "pioro": {"sztaby": 0, "deski": 4, "klejnoty": 0},
-            "pioro_kartografa": {"sztaby": 0, "deski": 4, "klejnoty": 0}
+            "tworzenie_lukuw": {"sztaby": 4, "deski": 2, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "mlotek_kowalski": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "mlot_kowalski": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "wytrych": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0}, # Przyklad: wytrych nie wymaga sztab
+            "kilof": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},   # Przyklad: kilof nie wymaga desek
+            "sierp": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "mozdzierz": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "narzedzie_szklarskie": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "narzedzia_naprawcze": {"sztaby": 2, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "narzedzia_druciarza": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "narzedzia_szewskie": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "pila": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "dluto": {"sztaby": 2, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kolczyki": {"sztaby": 1, "deski": 0, "klejnoty": 1, "tkanina": 0, "skora": 0},
+            "zloty_naszyjnik": {"sztaby": 1, "deski": 0, "klejnoty": 1, "tkanina": 0, "skora": 0},
+            "szpony": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "tekagi": {"sztaby": 6, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "ciemne_jingasa": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_jingasa": {"sztaby": 9, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "diadem": {"sztaby": 4, "deski": 0, "klejnoty": 10, "tkanina": 0, "skora": 0},
+            "swiecznikA": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "swiecznikB": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "swieczka": {"sztaby": 2, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "waga": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "lichtarzykA": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "lichtarzykB": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "luneta": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "bola": {"sztaby": 2, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "czesci_do_zegara": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kurek_do_beczki": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "obrecz": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "narzedzia_stolarskie": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "globus": {"sztaby": 0, "deski": 5, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "paleta": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "pioro": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "pioro_kartografa": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0}
         },
         "Stolarstwo": {
-            "laska": {"sztaby": 0, "deski": 4, "klejnoty": 0},
-            "sekata_laska": {"sztaby": 0, "deski": 5, "klejnoty": 0}
+            "laska": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "sekata_laska": {"sztaby": 0, "deski": 5, "klejnoty": 0, "tkanina": 0, "skora": 0}
         },
         "Tworzenie_Lukow": {
-            "luk": {"sztaby": 0, "deski": 7, "klejnoty": 0},
-            "dlugi_luk": {"sztaby": 0, "deski": 14, "klejnoty": 0},
-            "elfi_luk": {"sztaby": 0, "deski": 12, "klejnoty": 0},
-            "yumi": {"sztaby": 0, "deski": 15, "klejnoty": 0},
-            "elfi_dlugi_luk": {"sztaby": 0, "deski": 20, "klejnoty": 0},
-            "kusza": {"sztaby": 0, "deski": 7, "klejnoty": 0},
-            "ciezka_kusza": {"sztaby": 0, "deski": 15, "klejnoty": 0},
-            "szybka_kusza": {"sztaby": 0, "deski": 12, "klejnoty": 0},
-            "krasno_kusza": {"sztaby": 0, "deski": 14, "klejnoty": 0},
-            "krasno_ciezka_kusza": {"sztaby": 0, "deski": 20, "klejnoty": 0},
-            "strzaly": {"sztaby": 0, "deski": 1, "klejnoty": 0}
+            "luk": {"sztaby": 0, "deski": 7, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "dlugi_luk": {"sztaby": 0, "deski": 14, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "elfi_luk": {"sztaby": 0, "deski": 12, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "yumi": {"sztaby": 0, "deski": 15, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "elfi_dlugi_luk": {"sztaby": 0, "deski": 20, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kusza": {"sztaby": 0, "deski": 7, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "ciezka_kusza": {"sztaby": 0, "deski": 15, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "szybka_kusza": {"sztaby": 0, "deski": 12, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "krasno_kusza": {"sztaby": 0, "deski": 14, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "krasno_ciezka_kusza": {"sztaby": 0, "deski": 20, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "strzaly": {"sztaby": 0, "deski": 1, "klejnoty": 0, "tkanina": 0, "skora": 0}
         }
     }
 
@@ -72,6 +72,9 @@ class ShoppingListApp(QWidget):
     METAL_TYPES = ["zelazo", "zloto", "srebro", "veryt", "blackrock",
                    "agapit", "valoryt", "mytheril", "azuryt", "bloodrock", "royal", "grafit"]
     WOOD_TYPES = ["zwykle", "dab", "orzech", "cedr", "cis", "cyprys"]
+    # Nowe listy dla tkanin i skór
+    FABRIC_TYPES = ["zwykla"]
+    LEATHER_TYPES = ["zwykla", "kamienna", "sniezna"]
     
     # Stale dla opcji "Brak materialu"
     NO_MATERIAL_OPTION = "Brak materialu"
@@ -231,6 +234,39 @@ class ShoppingListApp(QWidget):
 
         add_item_layout.addWidget(self.wood_type_combo)
 
+        # Nowe pola dla tkanin
+        add_item_layout.addWidget(QLabel("Rodzaj tkaniny:"))
+        self.fabric_type_combo = QComboBox(self)
+        self.fabric_type_combo.setEditable(True)
+        self.fabric_type_combo.addItems(self.FABRIC_TYPES)
+        self.completer_fabric = QCompleter(self.FABRIC_TYPES, self.fabric_type_combo)
+        self.completer_fabric.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.completer_fabric.setFilterMode(Qt.MatchFlag.MatchContains)
+        self.completer_fabric.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+        self.fabric_type_combo.setCompleter(self.completer_fabric)
+        if "zwykla" in self.FABRIC_TYPES:
+            self.fabric_type_combo.setCurrentIndex(self.fabric_type_combo.findText("zwykla"))
+        else:
+            self.fabric_type_combo.setCurrentIndex(0)
+        add_item_layout.addWidget(self.fabric_type_combo)
+
+        # Nowe pola dla skór
+        add_item_layout.addWidget(QLabel("Rodzaj skory:"))
+        self.leather_type_combo = QComboBox(self)
+        self.leather_type_combo.setEditable(True)
+        self.leather_type_combo.addItems(self.LEATHER_TYPES)
+        self.completer_leather = QCompleter(self.LEATHER_TYPES, self.leather_type_combo)
+        self.completer_leather.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.completer_leather.setFilterMode(Qt.MatchFlag.MatchContains)
+        self.completer_leather.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+        self.leather_type_combo.setCompleter(self.completer_leather)
+        if "zwykla" in self.LEATHER_TYPES:
+            self.leather_type_combo.setCurrentIndex(self.leather_type_combo.findText("zwykla"))
+        else:
+            self.leather_type_combo.setCurrentIndex(0)
+        add_item_layout.addWidget(self.leather_type_combo)
+
+
         # Etykieta dla QLineEdit ilosci
         add_item_layout.addWidget(QLabel("Ilosc:"))
 
@@ -304,12 +340,18 @@ class ShoppingListApp(QWidget):
         self.total_deski_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.total_klejnoty_label = QLabel("Klejnoty: 0")
         self.total_klejnoty_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.total_tkanina_label = QLabel("Tkanina: 0") # Nowa etykieta
+        self.total_tkanina_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.total_skora_label = QLabel("Skora: 0") # Nowa etykieta
+        self.total_skora_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
         # Uklad poziomy dla sumy zasobow globalnych
         totals_layout = QHBoxLayout()
         totals_layout.addWidget(self.total_sztaby_label)
         totals_layout.addWidget(self.total_deski_label)
         totals_layout.addWidget(self.total_klejnoty_label)
+        totals_layout.addWidget(self.total_tkanina_label) # Dodanie do ukladu
+        totals_layout.addWidget(self.total_skora_label) # Dodanie do ukladu
         main_layout.addLayout(totals_layout)
 
         # Etykieta i QTextBrowser do wyswietlania sumy zasobow wedlug typu materialu
@@ -363,7 +405,9 @@ class ShoppingListApp(QWidget):
         self.setTabOrder(self.category_combo, self.item_combo)
         self.setTabOrder(self.item_combo, self.metal_type_combo)
         self.setTabOrder(self.metal_type_combo, self.wood_type_combo)
-        self.setTabOrder(self.wood_type_combo, self.quantity_input)
+        self.setTabOrder(self.wood_type_combo, self.fabric_type_combo) # Dodano do kolejnosci
+        self.setTabOrder(self.fabric_type_combo, self.leather_type_combo) # Dodano do kolejnosci
+        self.setTabOrder(self.leather_type_combo, self.quantity_input) # Zmieniono kolejność
         self.setTabOrder(self.quantity_input, add_button)
         # Dodanie cyklicznego przejscia fokusu po ostatnim elemencie do pierwszego
         self.setTabOrder(add_button, self.category_combo) 
@@ -486,7 +530,7 @@ class ShoppingListApp(QWidget):
         selected_item = self.item_combo.currentText()
         
         # Pobierz zasoby dla wybranego przedmiotu z odpowiedniej kategorii
-        resources = self.CRAFTING_RESOURCES.get(selected_category, {}).get(selected_item, {"sztaby": 0, "deski": 0, "klejnoty": 0})
+        resources = self.CRAFTING_RESOURCES.get(selected_category, {}).get(selected_item, {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0})
 
         # --- Obsluga dla sztab ---
         if resources["sztaby"] == 0:
@@ -546,6 +590,60 @@ class ShoppingListApp(QWidget):
             else:
                 self.wood_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
 
+        # --- Obsluga dla tkaniny ---
+        if resources["tkanina"] == 0:
+            self.fabric_type_combo.clear()
+            self.fabric_type_combo.addItem(self.NO_MATERIAL_OPTION)
+            self.fabric_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
+            self.fabric_type_combo.setEnabled(False)
+            self.fabric_type_combo.setEditable(False)
+            self.completer_fabric.setModel(self.fabric_type_combo.model())
+        else:
+            self.fabric_type_combo.setEnabled(True)
+            self.fabric_type_combo.setEditable(True)
+            
+            previous_selection = self.fabric_type_combo.currentText()
+
+            self.fabric_type_combo.clear()
+            self.fabric_type_combo.addItems(self.FABRIC_TYPES)
+            self.completer_fabric.setModel(self.fabric_type_combo.model())
+
+            if previous_selection in self.FABRIC_TYPES:
+                self.fabric_type_combo.setCurrentText(previous_selection)
+            elif "zwykla" in self.FABRIC_TYPES:
+                self.fabric_type_combo.setCurrentText("zwykla")
+            elif self.FABRIC_TYPES:
+                self.fabric_type_combo.setCurrentText(self.FABRIC_TYPES[0])
+            else:
+                self.fabric_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
+
+        # --- Obsluga dla skory ---
+        if resources["skora"] == 0:
+            self.leather_type_combo.clear()
+            self.leather_type_combo.addItem(self.NO_MATERIAL_OPTION)
+            self.leather_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
+            self.leather_type_combo.setEnabled(False)
+            self.leather_type_combo.setEditable(False)
+            self.completer_leather.setModel(self.leather_type_combo.model())
+        else:
+            self.leather_type_combo.setEnabled(True)
+            self.leather_type_combo.setEditable(True)
+
+            previous_selection = self.leather_type_combo.currentText()
+
+            self.leather_type_combo.clear()
+            self.leather_type_combo.addItems(self.LEATHER_TYPES)
+            self.completer_leather.setModel(self.leather_type_combo.model())
+
+            if previous_selection in self.LEATHER_TYPES:
+                self.leather_type_combo.setCurrentText(previous_selection)
+            elif "zwykla" in self.LEATHER_TYPES:
+                self.leather_type_combo.setCurrentText("zwykla")
+            elif self.LEATHER_TYPES:
+                self.leather_type_combo.setCurrentText(self.LEATHER_TYPES[0])
+            else:
+                self.leather_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
+
 
     def add_item_to_list(self):
         """
@@ -557,6 +655,8 @@ class ShoppingListApp(QWidget):
         selected_item = self.item_combo.currentText()
         selected_metal_type = self.metal_type_combo.currentText()
         selected_wood_type = self.wood_type_combo.currentText()
+        selected_fabric_type = self.fabric_type_combo.currentText() # Nowe
+        selected_leather_type = self.leather_type_combo.currentText() # Nowe
         quantity_text = self.quantity_input.text()
 
         # Walidacja czy wybrany artykul istnieje w wybranej kategorii
@@ -579,13 +679,15 @@ class ShoppingListApp(QWidget):
             return
 
         # Pobierz bazowe zasoby z odpowiedniej kategorii
-        item_resources_base = self.CRAFTING_RESOURCES[selected_category].get(selected_item, {"sztaby": 0, "deski": 0, "klejnoty": 0})
+        item_resources_base = self.CRAFTING_RESOURCES[selected_category].get(selected_item, {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0})
         
         # Oblicz calkowite zasoby dla tej pozycji (ilosc * zasoby_na_sztuke)
         total_item_resources = {
             "sztaby": item_resources_base["sztaby"] * quantity,
             "deski": item_resources_base["deski"] * quantity,
-            "klejnoty": item_resources_base["klejnoty"] * quantity
+            "klejnoty": item_resources_base["klejnoty"] * quantity,
+            "tkanina": item_resources_base["tkanina"] * quantity, # Nowe
+            "skora": item_resources_base["skora"] * quantity # Nowe
         }
 
         # Okreslenie przewazajacego materialu dla wyswietlenia i eksportu
@@ -612,6 +714,8 @@ class ShoppingListApp(QWidget):
         display_text += f" [Kategoria: {selected_category}]" # Dodano wyswietlanie kategorii
         display_text += f" [Sztaby: {selected_metal_type}]"
         display_text += f" [Deski: {selected_wood_type}]"
+        display_text += f" [Tkanina: {selected_fabric_type}]" # Nowe
+        display_text += f" [Skora: {selected_leather_type}]" # Nowe
 
         list_item = QListWidgetItem(display_text)
         # Ustaw element listy jako zaznaczalny i domyslnie zaznaczony
@@ -625,6 +729,8 @@ class ShoppingListApp(QWidget):
                 'article': selected_item,
                 'metal_type': selected_metal_type,
                 'wood_type': selected_wood_type,
+                'fabric_type': selected_fabric_type, # Nowe
+                'leather_type': selected_leather_type, # Nowe
                 'quantity': quantity,
                 'resources': total_item_resources, # Zasoby ogolne dla tej pozycji
                 'predominant_material_display': predominant_material_for_display, # Material przewazajacy do eksportu
@@ -763,6 +869,8 @@ class ShoppingListApp(QWidget):
                     'article': item_data.get('article'),
                     'metal_type': item_data.get('metal_type'),
                     'wood_type': item_data.get('wood_type'),
+                    'fabric_type': item_data.get('fabric_type'), # Nowe
+                    'leather_type': item_data.get('leather_type'), # Nowe
                     'quantity': item_data.get('quantity'),
                     'is_enabled': item_data.get('is_enabled', True)
                 })
@@ -806,6 +914,8 @@ class ShoppingListApp(QWidget):
                 article = item_data_raw.get('article')
                 metal_type = item_data_raw.get('metal_type')
                 wood_type = item_data_raw.get('wood_type')
+                fabric_type = item_data_raw.get('fabric_type', self.NO_MATERIAL_OPTION) # Nowe, z domyslna wartoscia
+                leather_type = item_data_raw.get('leather_type', self.NO_MATERIAL_OPTION) # Nowe, z domyslna wartoscia
                 quantity = item_data_raw.get('quantity')
                 is_enabled = item_data_raw.get('is_enabled', True)
 
@@ -813,13 +923,16 @@ class ShoppingListApp(QWidget):
                     print(f"Ostrzezenie: Pominiento niekompletny wpis: {item_data_raw}")
                     continue
 
+                # Upewnij sie, ze CRAFTING_RESOURCES zawiera nowe klucze dla tkaniny i skory
                 category_resources = self.CRAFTING_RESOURCES.get(category, {})
-                item_resources_base = category_resources.get(article, {"sztaby": 0, "deski": 0, "klejnoty": 0})
+                item_resources_base = category_resources.get(article, {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0})
 
                 total_item_resources = {
                     "sztaby": item_resources_base["sztaby"] * quantity,
                     "deski": item_resources_base["deski"] * quantity,
-                    "klejnoty": item_resources_base["klejnoty"] * quantity
+                    "klejnoty": item_resources_base["klejnoty"] * quantity,
+                    "tkanina": item_resources_base["tkanina"] * quantity, # Nowe
+                    "skora": item_resources_base["skora"] * quantity # Nowe
                 }
 
                 predominant_material_for_display = self.NO_MATERIAL_OPTION
@@ -837,6 +950,8 @@ class ShoppingListApp(QWidget):
                 display_text += f" [Kategoria: {category}]"
                 display_text += f" [Sztaby: {metal_type}]"
                 display_text += f" [Deski: {wood_type}]"
+                display_text += f" [Tkanina: {fabric_type}]" # Nowe
+                display_text += f" [Skora: {leather_type}]" # Nowe
 
                 new_list_item = QListWidgetItem(display_text)
                 new_list_item.setFlags(new_list_item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
@@ -847,6 +962,8 @@ class ShoppingListApp(QWidget):
                     'article': article,
                     'metal_type': metal_type,
                     'wood_type': wood_type,
+                    'fabric_type': fabric_type, # Nowe
+                    'leather_type': leather_type, # Nowe
                     'quantity': quantity,
                     'resources': total_item_resources,
                     'predominant_material_display': predominant_material_for_display,
@@ -899,8 +1016,10 @@ class ShoppingListApp(QWidget):
                     # Uzyj predominant_material_display do eksportu jako "kolor"
                     predominant_material = item_data.get('predominant_material_display', self.NO_MATERIAL_OPTION)
                     quantity = item_data.get('quantity', 0)
+                    fabric_type = item_data.get('fabric_type', self.NO_MATERIAL_OPTION) # Nowe
+                    leather_type = item_data.get('leather_type', self.NO_MATERIAL_OPTION) # Nowe
 
-                    f.write(f"{article};{predominant_material};{quantity}\n")
+                    f.write(f"{article};{predominant_material};{quantity};{fabric_type};{leather_type}\n") # Zaktualizowany format eksportu
             
             QMessageBox.information(self, "Eksport Zakonczony", f"Lista zostala pomyslnie wyeksportowana do pliku:\n{os.path.basename(file_path)}")
         except Exception as e:
@@ -915,10 +1034,14 @@ class ShoppingListApp(QWidget):
         total_sztaby_global = 0
         total_deski_global = 0
         total_klejnoty_global = 0
+        total_tkanina_global = 0 # Nowe
+        total_skora_global = 0 # Nowe
         
         # Slowniki do przechowywania sum zasobow dla kazdego typu materialu
         metal_type_totals = {metal: 0 for metal in self.METAL_TYPES}
         wood_type_totals = {wood: 0 for wood in self.WOOD_TYPES}
+        fabric_type_totals = {fabric: 0 for fabric in self.FABRIC_TYPES} # Nowe
+        leather_type_totals = {leather: 0 for leather in self.LEATHER_TYPES} # Nowe
 
         for i in range(self.shopping_list_widget.count()):
             item = self.shopping_list_widget.item(i)
@@ -932,11 +1055,15 @@ class ShoppingListApp(QWidget):
                 resources_for_item = item_data['resources']
                 selected_metal_type = item_data.get('metal_type')
                 selected_wood_type = item_data.get('wood_type')
+                selected_fabric_type = item_data.get('fabric_type') # Nowe
+                selected_leather_type = item_data.get('leather_type') # Nowe
 
                 # Sumowanie globalne
                 total_sztaby_global += resources_for_item.get('sztaby', 0)
                 total_deski_global += resources_for_item.get('deski', 0)
                 total_klejnoty_global += resources_for_item.get('klejnoty', 0)
+                total_tkanina_global += resources_for_item.get('tkanina', 0) # Nowe
+                total_skora_global += resources_for_item.get('skora', 0) # Nowe
 
                 # Sumowanie wedlug typu materialu (jesli wybrano konkretny typ i nie jest "Brak materialu")
                 if selected_metal_type != self.NO_MATERIAL_OPTION and selected_metal_type in metal_type_totals:
@@ -944,11 +1071,19 @@ class ShoppingListApp(QWidget):
                 
                 if selected_wood_type != self.NO_MATERIAL_OPTION and selected_wood_type in wood_type_totals:
                     wood_type_totals[selected_wood_type] += resources_for_item.get('deski', 0)
+
+                if selected_fabric_type != self.NO_MATERIAL_OPTION and selected_fabric_type in fabric_type_totals: # Nowe
+                    fabric_type_totals[selected_fabric_type] += resources_for_item.get('tkanina', 0)
+                
+                if selected_leather_type != self.NO_MATERIAL_OPTION and selected_leather_type in leather_type_totals: # Nowe
+                    leather_type_totals[selected_leather_type] += resources_for_item.get('skora', 0)
         
         # Zaktualizuj tekst etykiet globalnych
         self.total_sztaby_label.setText(f"Sztaby (suma): {total_sztaby_global}")
         self.total_deski_label.setText(f"Deski (suma): {total_deski_global}")
         self.total_klejnoty_label.setText(f"Klejnoty (suma): {total_klejnoty_global}")
+        self.total_tkanina_label.setText(f"Tkanina (suma): {total_tkanina_global}") # Nowe
+        self.total_skora_label.setText(f"Skora (suma): {total_skora_global}") # Nowe
 
         # Zaktualizuj QTextBrowser dla sum wedlug typu materialu
         material_html = "<h3>Sztaby i deski wg typu materialu:</h3>"
@@ -974,6 +1109,29 @@ class ShoppingListApp(QWidget):
                 material_html += f"<p><b>{wood_type}:</b> {total_qty}</p>"
         if not has_wood_totals:
             material_html += "<p>Brak wymagan na deski.</p>"
+
+        # Sekcja dla tkanin (Nowe)
+        material_html += "<h4>Tkanina:</h4>"
+        has_fabric_totals = False
+        for fabric_type in self.FABRIC_TYPES:
+            total_qty = fabric_type_totals.get(fabric_type, 0)
+            if total_qty > 0:
+                has_fabric_totals = True
+                material_html += f"<p><b>{fabric_type}:</b> {total_qty}</p>"
+        if not has_fabric_totals:
+            material_html += "<p>Brak wymagan na tkanine.</p>"
+
+        # Sekcja dla skór (Nowe)
+        material_html += "<h4>Skora:</h4>"
+        has_leather_totals = False
+        for leather_type in self.LEATHER_TYPES:
+            total_qty = leather_type_totals.get(leather_type, 0)
+            if total_qty > 0:
+                has_leather_totals = True
+                material_html += f"<p><b>{leather_type}:</b> {total_qty}</p>"
+        if not has_leather_totals:
+            material_html += "<p>Brak wymagan na skore.</p>"
+
 
         self.material_totals_display.setHtml(material_html)
 
