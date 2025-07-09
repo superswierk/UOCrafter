@@ -50,8 +50,21 @@ class ShoppingListApp(QWidget):
             "pioro_kartografa": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0}
         },
         "Stolarstwo": {
-            "laska": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
-            "sekata_laska": {"sztaby": 0, "deski": 5, "klejnoty": 0, "tkanina": 0, "skora": 0}
+            "szafaA": {"sztaby": 0, "deski": 35, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "szafaB": {"sztaby": 0, "deski": 35, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kij_pastuszy": {"sztaby": 0, "deski": 7, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "laska": {"sztaby": 0, "deski": 7, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "drag": {"sztaby": 0, "deski": 6, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "sekata_laska": {"sztaby": 0, "deski": 7, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "dzika_laska": {"sztaby": 0, "deski": 8, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "srebrna_skrzynia": {"sztaby": 20, "deski": 5, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "mlyn": {"sztaby": 50, "deski": 100, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "male_lozko": {"sztaby": 0, "deski": 100, "klejnoty": 0, "tkanina": 90, "skora": 0},
+            "kolowrotek": {"sztaby": 0, "deski": 75, "klejnoty": 0, "tkanina": 5, "skora": 0},
+            "manekin_okradania": {"sztaby": 0, "deski": 65, "klejnoty": 0, "tkanina": 60, "skora": 0},
+            "narzedzie_tkackie": {"sztaby": 0, "deski": 85, "klejnoty": 0, "tkanina": 25, "skora": 0},
+            "koryto": {"sztaby": 0, "deski": 150, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "duza_harfa": {"sztaby": 0, "deski": 30, "klejnoty": 0, "tkanina": 15, "skora": 0}
         },
         "Tworzenie_Lukow": {
             "luk": {"sztaby": 0, "deski": 7, "klejnoty": 0, "tkanina": 0, "skora": 0},
@@ -75,7 +88,7 @@ class ShoppingListApp(QWidget):
     # Listy dla typow sztab i desek (bez "Brak materialu" jako elementu do wyboru, gdy jest wymagany)
     METAL_TYPES = ["zelazo", "zloto", "srebro", "veryt", "blackrock",
                    "agapit", "valoryt", "mytheril", "azuryt", "bloodrock", "royal", "grafit"]
-    WOOD_TYPES = ["zwykle", "dab", "orzech", "cedr", "cis", "cyprys"]
+    WOOD_TYPES = ["zwykle", "dab", "orzech", "cedr", "cis", "wierzba", "ohii", "cyprys"]
     # Nowe listy dla tkanin i skór
     FABRIC_TYPES = ["zwykla"]
     LEATHER_TYPES = ["zwykla", "kamienna", "sniezna"]
