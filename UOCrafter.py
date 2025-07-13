@@ -12,6 +12,7 @@ class ShoppingListApp(QWidget):
     # Slownik definiujacy zasoby potrzebne do wytworzenia kazdego artykulu, teraz z kategoriami
     CRAFTING_RESOURCES = {
         "Druciarstwo": {
+            "czekaj": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "tworzenie_lukuw": {"sztaby": 4, "deski": 2, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "mlotek_kowalski": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "mlot_kowalski": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
@@ -47,7 +48,23 @@ class ShoppingListApp(QWidget):
             "globus": {"sztaby": 0, "deski": 5, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "paleta": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "pioro": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
-            "pioro_kartografa": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0}
+            "pioro_kartografa": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kielich": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "talerz": {"sztaby": 2, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "garnekA": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "garnekB": {"sztaby": 20, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "garnuszek": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "rondel": {"sztaby": 5, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "widelecB": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "widelecA": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "tasak": {"sztaby": 3, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "nozA": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "nozB": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kolko": {"sztaby": 2, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "narzedzie_stolarskieA": {"sztaby": 0, "deski": 2, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "narzedzie_stolarskieB": {"sztaby": 0, "deski": 4, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "zestaw_narzedzi": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "zawias": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0}
         },
         "Stolarstwo": {
             "szafaA": {"sztaby": 0, "deski": 35, "klejnoty": 0, "tkanina": 0, "skora": 0},
@@ -94,7 +111,7 @@ class ShoppingListApp(QWidget):
     LEATHER_TYPES = ["zwykla", "kamienna", "sniezna"]
     
     # Stale dla opcji "Brak materialu"
-    NO_MATERIAL_OPTION = "Brak materialu"
+    NO_MATERIAL_OPTION = "brak_materialu"
     
     def __init__(self):
         super().__init__()
@@ -335,6 +352,16 @@ class ShoppingListApp(QWidget):
         self.clear_progress_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         action_buttons_layout.addWidget(self.clear_progress_button)
 
+        # Nowy przycisk "Odwróć"
+        self.invert_selection_button = QPushButton("Odwróć", self)
+        self.invert_selection_button.clicked.connect(self.invert_selection)
+        self.invert_selection_button.setStyleSheet(
+            "QPushButton { background-color: #007BFF; color: white; border-radius: 5px; padding: 5px; }"
+            "QPushButton:hover { background-color: #0056b3; }"
+        )
+        self.invert_selection_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        action_buttons_layout.addWidget(self.invert_selection_button)
+
         # QPushButton - przycisk "Eksportuj do pliku" (z czerwonym akcentem)
         self.export_button = QPushButton("Eksportuj do pliku", self)
         self.export_button.clicked.connect(self.export_list_to_file)
@@ -519,7 +546,7 @@ class ShoppingListApp(QWidget):
         """
         # Zapisz dane dla poprzednio aktywnej kategorii, jesli jakas byla i byly niezapisane zmiany
         # Przekazujemy starą wartość self.current_active_category do save_data
-        if self.current_active_category and self.unsaved_changes:
+        if self.unsaved_changes and self.current_active_category: # Dodano sprawdzenie czy current_active_category nie jest None
             self.save_data(show_message=False, category_to_save=self.current_active_category)
 
         # Pobierz nowo wybrana kategorie
@@ -709,20 +736,29 @@ class ShoppingListApp(QWidget):
         }
 
         # Okreslenie przewazajacego materialu dla wyswietlenia i eksportu
-        # Uwzglednij, ze wybrane typy materialow moga byc "Brak materialu"
         predominant_material_for_display = self.NO_MATERIAL_OPTION
 
-        if item_resources_base["sztaby"] > item_resources_base["deski"] and selected_metal_type != self.NO_MATERIAL_OPTION:
-            predominant_material_for_display = selected_metal_type
-        elif item_resources_base["deski"] > item_resources_base["sztaby"] and selected_wood_type != self.NO_MATERIAL_OPTION:
-            predominant_material_for_display = selected_wood_type
-        elif item_resources_base["sztaby"] == item_resources_base["deski"]:
-            # Jesli ilosci zasobow sa rowne (i nie sa zerowe), wybierz preferowany typ
-            if selected_metal_type != self.NO_MATERIAL_OPTION:
-                predominant_material_for_display = selected_metal_type
-            elif selected_wood_type != self.NO_MATERIAL_OPTION:
-                predominant_material_for_display = selected_wood_type
-            # Jesli oba sa "Brak materialu", predominant_material_for_display pozostanie NO_MATERIAL_OPTION
+        material_candidates = []
+        if item_resources_base["sztaby"] > 0 and selected_metal_type != self.NO_MATERIAL_OPTION:
+            material_candidates.append((item_resources_base["sztaby"], selected_metal_type))
+        if item_resources_base["deski"] > 0 and selected_wood_type != self.NO_MATERIAL_OPTION:
+            material_candidates.append((item_resources_base["deski"], selected_wood_type))
+        if item_resources_base["tkanina"] > 0 and selected_fabric_type != self.NO_MATERIAL_OPTION:
+            material_candidates.append((item_resources_base["tkanina"], selected_fabric_type))
+        if item_resources_base["skora"] > 0 and selected_leather_type != self.NO_MATERIAL_OPTION:
+            material_candidates.append((item_resources_base["skora"], selected_leather_type))
+        
+        # Klejnoty są materiałem, ale nie mają "typu" jak drewno czy metal, więc używamy nazwy "klejnoty"
+        if item_resources_base["klejnoty"] > 0:
+            material_candidates.append((item_resources_base["klejnoty"], "klejnoty"))
+
+        if material_candidates:
+            # Znajdź materiał z największą ilością
+            # max() z kluczem lambda, aby sortować po pierwszym elemencie krotki (ilości)
+            # Jeśli ilości są równe, wybierze pierwszy element z listy material_candidates,
+            # co daje nam priorytet: sztaby > deski > tkanina > skora > klejnoty (jeśli ilości są równe)
+            predominant_material_for_display = max(material_candidates, key=lambda x: x[0])[1]
+
 
         # Utworz sformatowany ciag znakow do dodania na liste
         # Dodaj numer pozycji na poczatku
@@ -953,16 +989,25 @@ class ShoppingListApp(QWidget):
                     "skora": item_resources_base["skora"] * quantity # Nowe
                 }
 
+                # Okreslenie przewazajacego materialu dla wyswietlenia i eksportu
                 predominant_material_for_display = self.NO_MATERIAL_OPTION
-                if item_resources_base["sztaby"] > item_resources_base["deski"] and metal_type != self.NO_MATERIAL_OPTION:
-                    predominant_material_for_display = metal_type
-                elif item_resources_base["deski"] > item_resources_base["sztaby"] and wood_type != self.NO_MATERIAL_OPTION:
-                    predominant_material_for_display = wood_type
-                elif item_resources_base["sztaby"] == item_resources_base["deski"]:
-                    if metal_type != self.NO_MATERIAL_OPTION:
-                        predominant_material_for_display = metal_type
-                    elif wood_type != self.NO_MATERIAL_OPTION:
-                        predominant_material_for_display = wood_type
+
+                material_candidates = []
+                if item_resources_base["sztaby"] > 0 and metal_type != self.NO_MATERIAL_OPTION:
+                    material_candidates.append((item_resources_base["sztaby"], metal_type))
+                if item_resources_base["deski"] > 0 and wood_type != self.NO_MATERIAL_OPTION:
+                    material_candidates.append((item_resources_base["deski"], wood_type))
+                if item_resources_base["tkanina"] > 0 and fabric_type != self.NO_MATERIAL_OPTION:
+                    material_candidates.append((item_resources_base["tkanina"], fabric_type))
+                if item_resources_base["skora"] > 0 and leather_type != self.NO_MATERIAL_OPTION:
+                    material_candidates.append((item_resources_base["skora"], leather_type))
+                
+                # Klejnoty są materiałem, ale nie mają "typu" jak drewno czy metal, więc używamy nazwy "klejnoty"
+                if item_resources_base["klejnoty"] > 0:
+                    material_candidates.append((item_resources_base["klejnoty"], "klejnoty"))
+
+                if material_candidates:
+                    predominant_material_for_display = max(material_candidates, key=lambda x: x[0])[1]
                 
                 display_text = f"{i + 1}. {article} ({predominant_material_for_display}) - Ilosc: {quantity}"
                 display_text += f" [Kategoria: {category}]"
@@ -1034,14 +1079,52 @@ class ShoppingListApp(QWidget):
                     # Uzyj predominant_material_display do eksportu jako "kolor"
                     predominant_material = item_data.get('predominant_material_display', self.NO_MATERIAL_OPTION)
                     quantity = item_data.get('quantity', 0)
-                    fabric_type = item_data.get('fabric_type', self.NO_MATERIAL_OPTION) # Nowe
-                    leather_type = item_data.get('leather_type', self.NO_MATERIAL_OPTION) # Nowe
+                    fabric_type = item_data.get('fabric_type', self.NO_MATERIAL_OPTION)
+                    leather_type = item_data.get('leather_type', self.NO_MATERIAL_OPTION)
 
-                    f.write(f"{article};{predominant_material};{quantity};{fabric_type};{leather_type}\n") # Zaktualizowany format eksportu
+                    # Budowanie linii do eksportu dynamicznie
+                    parts = [article, predominant_material, str(quantity)]
+                    
+                    # Dodaj fabric_type i leather_type tylko jesli nie sa "Brak materialu"
+                    if fabric_type != self.NO_MATERIAL_OPTION:
+                        parts.append(fabric_type)
+                    if leather_type != self.NO_MATERIAL_OPTION:
+                        parts.append(leather_type)
+
+                    f.write(";".join(parts) + "\n")
             
             QMessageBox.information(self, "Eksport Zakonczony", f"Lista zostala pomyslnie wyeksportowana do pliku:\n{os.path.basename(file_path)}")
         except Exception as e:
             QMessageBox.critical(self, "Blad Eksportu", f"Wystapil blad podczas eksportowania listy: {e}")
+
+    def invert_selection(self):
+        """
+        Odwraca stan zaznaczenia wszystkich elementow na liscie:
+        wlaczone staja sie wylaczone, a wylaczone staja sie wlaczone.
+        """
+        # Odłącz sygnał, aby uniknąć wielokrotnego wywoływania calculate_totals
+        self.shopping_list_widget.itemChanged.disconnect(self.handle_item_checked_state_changed)
+
+        for i in range(self.shopping_list_widget.count()):
+            item = self.shopping_list_widget.item(i)
+            current_state = item.checkState()
+            if current_state == Qt.CheckState.Checked:
+                item.setCheckState(Qt.CheckState.Unchecked)
+            else:
+                item.setCheckState(Qt.CheckState.Checked)
+            
+            # Ręcznie zaktualizuj dane elementu, ponieważ sygnał jest odłączony
+            item_data = item.data(Qt.ItemDataRole.UserRole)
+            if item_data:
+                item_data['is_enabled'] = (item.checkState() == Qt.CheckState.Checked)
+                item.setData(Qt.ItemDataRole.UserRole, item_data)
+                self.update_item_visual_state(item) # Zaktualizuj wyglad wizualny
+
+        # Ponownie podłącz sygnał
+        self.shopping_list_widget.itemChanged.connect(self.handle_item_checked_state_changed)
+        
+        self.unsaved_changes = True # Zmiana nastapila, ustaw flage
+        self.calculate_totals() # Przelicz sumy raz po wszystkich zmianach
 
     def calculate_totals(self):
         """
