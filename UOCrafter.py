@@ -71,6 +71,7 @@ class ShoppingListApp(QWidget):
             "zawias": {"sztaby": 1, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0}
         },
         "Stolarstwo": {
+            "czekaj": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "szafaA": {"sztaby": 0, "deski": 35, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "szafaB": {"sztaby": 0, "deski": 35, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "kij_pastuszy": {"sztaby": 0, "deski": 7, "klejnoty": 0, "tkanina": 0, "skora": 0},
@@ -85,9 +86,11 @@ class ShoppingListApp(QWidget):
             "manekin_okradania": {"sztaby": 0, "deski": 65, "klejnoty": 0, "tkanina": 60, "skora": 0},
             "narzedzie_tkackie": {"sztaby": 0, "deski": 85, "klejnoty": 0, "tkanina": 25, "skora": 0},
             "koryto": {"sztaby": 0, "deski": 150, "klejnoty": 0, "tkanina": 0, "skora": 0},
-            "duza_harfa": {"sztaby": 0, "deski": 30, "klejnoty": 0, "tkanina": 15, "skora": 0}
+            "duza_harfa": {"sztaby": 0, "deski": 30, "klejnoty": 0, "tkanina": 15, "skora": 0},
+            "mocna_klatka": {"sztaby": 10, "deski": 40, "klejnoty": 0, "tkanina": 0, "skora": 0}
         },
         "Tworzenie_Lukow": {
+            "czekaj": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "luk": {"sztaby": 0, "deski": 7, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "dlugi_luk": {"sztaby": 0, "deski": 14, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "elfi_luk": {"sztaby": 0, "deski": 12, "klejnoty": 0, "tkanina": 0, "skora": 0},
@@ -101,8 +104,36 @@ class ShoppingListApp(QWidget):
             "strzaly": {"sztaby": 0, "deski": 1, "klejnoty": 0, "tkanina": 0, "skora": 0}
         },
         "Krawiectwo": { # Nowa kategoria
+            "czekaj": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "czapka": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 2, "skora": 0},
             "skorzana_czapka": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 2}
+        },
+        "Kowalstwo": { # Nowa kategoria
+            "czekaj": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "sztylet": {"sztaby": 3, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "szpikulec": {"sztaby": 4, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "katana": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kris": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "sejmitar": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "krotki_miecz": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "dlugi_mlot": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "duzy_mlot": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "bulawa": {"sztaby": 6, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "wojenna_bulawa": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "dlugi_miecz": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "bitewny_miecz": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "topor_zdobiony": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "duzy_bojowy_topor": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "niszczycielski_topor": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "siekiera": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "dwureczna_siekiera": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "podwojna_siekiera": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "krotka_wlocznia": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "wlocznia": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "berdysz": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "halabarda": {"sztaby": 20, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "wojenne_widly": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "podwojne_ostrza": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0}
         }
     }
 
