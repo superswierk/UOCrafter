@@ -116,18 +116,26 @@ class ShoppingListApp(QWidget):
             "kris": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "sejmitar": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "krotki_miecz": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "sai": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "elfickie_ostrze": {"sztaby": 9, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "dlugi_mlot": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "duzy_mlot": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "bulawa": {"sztaby": 6, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "wojenna_bulawa": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "tetsubo": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "berlo": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "diamentowa_bulawa": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "dlugi_miecz": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "bitewny_miecz": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "wielki_miecz": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "topor_zdobiony": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "duzy_bojowy_topor": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "niszczycielski_topor": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "siekiera": {"sztaby": 8, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "dwureczna_siekiera": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "podwojna_siekiera": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kama": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "wojenny_topor": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "krotka_wlocznia": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "wlocznia": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "berdysz": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
@@ -153,7 +161,7 @@ class ShoppingListApp(QWidget):
         self.is_dark_theme = True # Flaga do sledzenia aktualnego motywu
         self.unsaved_changes = False # Nowa flaga do sledzenia niezapisanych zmian
         self.current_active_category = None # Przechowuje aktualnie wybrana kategorie
-        self.app_version = "0.2.0" # Dodana zmienna dla wersji aplikacji
+        self.app_version = "0.2.1" # Zmieniona wersja aplikacji
         self.initUI()
         self.set_dark_mode() # Ustawienie poczatkowego motywu na ciemny
         # load_data_on_startup jest wywolywane przez update_item_combo na koncu initUI
@@ -971,9 +979,12 @@ class ShoppingListApp(QWidget):
                 json.dump(data_to_save, f, indent=4)
             if show_message:
                 QMessageBox.information(self, "Zapisano", f"Dane zostaly zapisane do pliku: {os.path.basename(file_path)}")
-            # self.unsaved_changes = False # Ta flaga jest resetowana w update_item_combo
+            # Po udanym zapisie, resetujemy flagę niezapisanych zmian.
+            # To jest kluczowa zmiana, aby aplikacja wiedziała, że stan jest aktualny.
+            self.unsaved_changes = False
         except Exception as e:
-            QMessageBox.critical(self, "Blad Zapisu", f"Wystapil blad podczas zapisu danych: {e}")
+            if show_message:
+                QMessageBox.critical(self, "Blad Zapisu", f"Wystapil blad podczas zapisu danych: {e}")
 
     def load_data(self, show_message=True):
         """
