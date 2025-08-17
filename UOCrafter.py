@@ -87,7 +87,8 @@ class ShoppingListApp(QWidget):
             "narzedzie_tkackie": {"sztaby": 0, "deski": 85, "klejnoty": 0, "tkanina": 25, "skora": 0},
             "koryto": {"sztaby": 0, "deski": 150, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "duza_harfa": {"sztaby": 0, "deski": 30, "klejnoty": 0, "tkanina": 15, "skora": 0},
-            "mocna_klatka": {"sztaby": 10, "deski": 40, "klejnoty": 0, "tkanina": 0, "skora": 0}
+            "mocna_klatka": {"sztaby": 10, "deski": 40, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "zwoje": {"sztaby": 0, "deski": 1, "klejnoty": 0, "tkanina": 0, "skora": 0}
         },
         "Tworzenie_Lukow": {
             "czekaj": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
@@ -148,7 +149,7 @@ class ShoppingListApp(QWidget):
     # Listy dla typow sztab i desek (bez "Brak materialu" jako elementu do wyboru, gdy jest wymagany)
     METAL_TYPES = ["zelazo", "zloto", "srebro", "veryt", "blackrock",
                    "agapit", "valoryt", "mytheril", "azuryt", "bloodrock", "royal", "grafit"]
-    WOOD_TYPES = ["zwykle", "dab", "orzech", "cedr", "cis", "wierzba", "ohii", "cyprys"]
+    WOOD_TYPES = ["zwykle", "dab", "orzech", "cedr", "cis", "wierzba", "ohii", "cyprys", "arkanid"]
     # Nowe listy dla tkanin i skór
     FABRIC_TYPES = ["zwykla"]
     LEATHER_TYPES = ["zwykla", "kamienna", "sniezna"]
