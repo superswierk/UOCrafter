@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import base64 # Importujemy modul base64 do obslugi danych ikon
+from collections import defaultdict
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QComboBox, QLineEdit, QPushButton, QListWidget, QLabel,
                              QMessageBox, QTextBrowser, QCompleter, QListWidgetItem, QSplashScreen, QGroupBox, QSizePolicy) # Dodano QGroupBox
@@ -143,6 +144,11 @@ class ShoppingListApp(QWidget):
             "halabarda": {"sztaby": 20, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "wojenne_widly": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
             "podwojne_ostrza": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0}
+        },
+        "Umagicznianie": {
+            "krysztal_sily": {"magiczny_proszek": 10, "perla": 1},
+            "zwoj_madrosci": {"pusty_zwoj": 1, "atrament": 5, "pyl_many": 20},
+            "ulepszenie_miecza": {"ostrze_miecza": 1, "krysztal_ognia": 3, "runa_mocy": 1}
         }
     }
 
@@ -162,7 +168,7 @@ class ShoppingListApp(QWidget):
         self.is_dark_theme = True # Flaga do sledzenia aktualnego motywu
         self.unsaved_changes = False # Nowa flaga do sledzenia niezapisanych zmian
         self.current_active_category = None # Przechowuje aktualnie wybrana kategorie
-        self.app_version = "0.2.1" # Zmieniona wersja aplikacji
+        self.app_version = "0.3.0" # Zmieniona wersja aplikacji
         self.initUI()
         self.set_dark_mode() # Ustawienie poczatkowego motywu na ciemny
         # load_data_on_startup jest wywolywane przez update_item_combo na koncu initUI
@@ -418,33 +424,16 @@ class ShoppingListApp(QWidget):
 
         main_layout.addLayout(action_buttons_layout)
 
-        # Etykiety do wyswietlania sumy zasobow (globalne)
+        # Etykieta i QTextBrowser do wyswietlania sumy zasobow (globalnie)
         totals_label = QLabel("Wymagane zasoby (suma):")
-        totals_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         main_layout.addWidget(totals_label)
-
-        self.total_sztaby_label = QLabel("Sztaby: 0")
-        self.total_sztaby_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.total_deski_label = QLabel("Deski: 0")
-        self.total_deski_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.total_klejnoty_label = QLabel("Klejnoty: 0")
-        self.total_klejnoty_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.total_tkanina_label = QLabel("Tkanina: 0") # Nowa etykieta
-        self.total_tkanina_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.total_skora_label = QLabel("Skora: 0") # Nowa etykieta
-        self.total_skora_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-
-        # Uklad poziomy dla sumy zasobow globalnych
-        totals_layout = QHBoxLayout()
-        totals_layout.addWidget(self.total_sztaby_label)
-        totals_layout.addWidget(self.total_deski_label)
-        totals_layout.addWidget(self.total_klejnoty_label)
-        totals_layout.addWidget(self.total_tkanina_label) # Dodanie do ukladu
-        totals_layout.addWidget(self.total_skora_label) # Dodanie do ukladu
-        main_layout.addLayout(totals_layout)
+        self.global_totals_display = QTextBrowser(self)
+        self.global_totals_display.setMinimumHeight(80)
+        self.global_totals_display.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        main_layout.addWidget(self.global_totals_display)
 
         # Etykieta i QTextBrowser do wyswietlania sumy zasobow wedlug typu materialu
-        material_type_totals_label = QLabel("Wymagane zasoby (wg typu materialu):")
+        material_type_totals_label = QLabel("Szczegóły materiałów (wg typu):")
         material_type_totals_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         main_layout.addWidget(material_type_totals_label)
         self.material_totals_display = QTextBrowser(self)
@@ -619,10 +608,10 @@ class ShoppingListApp(QWidget):
         selected_item = self.item_combo.currentText()
         
         # Pobierz zasoby dla wybranego przedmiotu z odpowiedniej kategorii
-        resources = self.CRAFTING_RESOURCES.get(selected_category, {}).get(selected_item, {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0})
+        resources = self.CRAFTING_RESOURCES.get(selected_category, {}).get(selected_item, {})
 
         # --- Obsluga dla sztab ---
-        if resources["sztaby"] == 0:
+        if resources.get("sztaby", 0) == 0:
             self.metal_type_combo.clear() # Wyczyść liste
             self.metal_type_combo.addItem(self.NO_MATERIAL_OPTION) # Dodaj tylko "Brak materialu"
             self.metal_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
@@ -653,7 +642,7 @@ class ShoppingListApp(QWidget):
 
 
         # --- Obsluga dla desek ---
-        if resources["deski"] == 0:
+        if resources.get("deski", 0) == 0:
             self.wood_type_combo.clear()
             self.wood_type_combo.addItem(self.NO_MATERIAL_OPTION)
             self.wood_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
@@ -680,7 +669,7 @@ class ShoppingListApp(QWidget):
                 self.wood_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
 
         # --- Obsluga dla tkaniny ---
-        if resources["tkanina"] == 0:
+        if resources.get("tkanina", 0) == 0:
             self.fabric_type_combo.clear()
             self.fabric_type_combo.addItem(self.NO_MATERIAL_OPTION)
             self.fabric_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
@@ -707,7 +696,7 @@ class ShoppingListApp(QWidget):
                 self.fabric_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
 
         # --- Obsluga dla skory ---
-        if resources["skora"] == 0:
+        if resources.get("skora", 0) == 0:
             self.leather_type_combo.clear()
             self.leather_type_combo.addItem(self.NO_MATERIAL_OPTION)
             self.leather_type_combo.setCurrentText(self.NO_MATERIAL_OPTION)
@@ -744,8 +733,8 @@ class ShoppingListApp(QWidget):
         selected_item = self.item_combo.currentText()
         selected_metal_type = self.metal_type_combo.currentText()
         selected_wood_type = self.wood_type_combo.currentText()
-        selected_fabric_type = self.fabric_type_combo.currentText() # Nowe
-        selected_leather_type = self.leather_type_combo.currentText() # Nowe
+        selected_fabric_type = self.fabric_type_combo.currentText()
+        selected_leather_type = self.leather_type_combo.currentText()
         quantity_text = self.quantity_input.text()
 
         # Walidacja czy wybrany artykul istnieje w wybranej kategorii
@@ -768,78 +757,64 @@ class ShoppingListApp(QWidget):
             return
 
         # Pobierz bazowe zasoby z odpowiedniej kategorii
-        item_resources_base = self.CRAFTING_RESOURCES[selected_category].get(selected_item, {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0})
+        item_resources_base = self.CRAFTING_RESOURCES[selected_category].get(selected_item, {})
         
         # Oblicz calkowite zasoby dla tej pozycji (ilosc * zasoby_na_sztuke)
-        total_item_resources = {
-            "sztaby": item_resources_base["sztaby"] * quantity,
-            "deski": item_resources_base["deski"] * quantity,
-            "klejnoty": item_resources_base["klejnoty"] * quantity,
-            "tkanina": item_resources_base["tkanina"] * quantity, # Nowe
-            "skora": item_resources_base["skora"] * quantity # Nowe
-        }
+        total_item_resources = {resource: amount * quantity for resource, amount in item_resources_base.items()}
 
-        # Okreslenie przewazajacego materialu dla wyswietlenia i eksportu
+        # Okreslenie przewazajacego materialu dla wyswietlenia
         predominant_material_for_display = self.NO_MATERIAL_OPTION
-
-        material_candidates = []
-        if item_resources_base["sztaby"] > 0 and selected_metal_type != self.NO_MATERIAL_OPTION:
-            material_candidates.append((item_resources_base["sztaby"], selected_metal_type))
-        if item_resources_base["deski"] > 0 and selected_wood_type != self.NO_MATERIAL_OPTION:
-            material_candidates.append((item_resources_base["deski"], selected_wood_type))
-        if item_resources_base["tkanina"] > 0 and selected_fabric_type != self.NO_MATERIAL_OPTION:
-            material_candidates.append((item_resources_base["tkanina"], selected_fabric_type))
-        if item_resources_base["skora"] > 0 and selected_leather_type != self.NO_MATERIAL_OPTION:
-            material_candidates.append((item_resources_base["skora"], selected_leather_type))
-        
-        # Klejnoty są materiałem, ale nie mają "typu" jak drewno czy metal, więc używamy nazwy "klejnoty"
-        if item_resources_base["klejnoty"] > 0:
-            material_candidates.append((item_resources_base["klejnoty"], "klejnoty"))
-
-        if material_candidates:
-            # Znajdź materiał z największą ilością
-            # max() z kluczem lambda, aby sortować po pierwszym elemencie krotki (ilości)
-            # Jeśli ilości są równe, wybierze pierwszy element z listy material_candidates,
-            # co daje nam priorytet: sztaby > deski > tkanina > skora > klejnoty (jeśli ilości są równe)
-            predominant_material_for_display = max(material_candidates, key=lambda x: x[0])[1]
-
+        if item_resources_base:
+            # Znajdz klucz (nazwe zasobu) z najwieksza wartoscia (iloscia)
+            predominant_resource_name = max(item_resources_base, key=item_resources_base.get)
+            
+            # Dla znanych typow, uzyj wybranego podtypu (np. zelazo zamiast sztaby)
+            if predominant_resource_name == 'sztaby' and selected_metal_type != self.NO_MATERIAL_OPTION:
+                predominant_material_for_display = selected_metal_type
+            elif predominant_resource_name == 'deski' and selected_wood_type != self.NO_MATERIAL_OPTION:
+                predominant_material_for_display = selected_wood_type
+            elif predominant_resource_name == 'tkanina' and selected_fabric_type != self.NO_MATERIAL_OPTION:
+                predominant_material_for_display = selected_fabric_type
+            elif predominant_resource_name == 'skora' and selected_leather_type != self.NO_MATERIAL_OPTION:
+                predominant_material_for_display = selected_leather_type
+            else:
+                predominant_material_for_display = predominant_resource_name
 
         # Utworz sformatowany ciag znakow do dodania na liste
-        # Dodaj numer pozycji na poczatku
         item_number = self.shopping_list_widget.count() + 1
         display_text = f"{item_number}. {selected_item} ({predominant_material_for_display}) - Ilosc: {quantity}"
-        # Dodaj informacje o konkretnych typach sztab i desek
-        display_text += f" [Kategoria: {selected_category}]" # Dodano wyswietlanie kategorii
-        display_text += f" [Sztaby: {selected_metal_type}]"
-        display_text += f" [Deski: {selected_wood_type}]"
-        display_text += f" [Tkanina: {selected_fabric_type}]" # Nowe
-        display_text += f" [Skora: {selected_leather_type}]" # Nowe
+        display_text += f" [Kategoria: {selected_category}]"
+        
+        # Dodaj szczegoly tylko dla uzywanych typow
+        if item_resources_base.get("sztaby", 0) > 0: display_text += f" [Sztaby: {selected_metal_type}]"
+        if item_resources_base.get("deski", 0) > 0: display_text += f" [Deski: {selected_wood_type}]"
+        if item_resources_base.get("tkanina", 0) > 0: display_text += f" [Tkanina: {selected_fabric_type}]"
+        if item_resources_base.get("skora", 0) > 0: display_text += f" [Skora: {selected_leather_type}]"
 
         list_item = QListWidgetItem(display_text)
-        # Ustaw element listy jako zaznaczalny i domyslnie zaznaczony
         list_item.setFlags(list_item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
         list_item.setCheckState(Qt.CheckState.Checked)
 
         # Przechowaj wszystkie potrzebne dane w QListWidgetItem
         list_item.setData(
             Qt.ItemDataRole.UserRole, {
-                'category': selected_category, # Zapisz kategorie
+                'category': selected_category,
                 'article': selected_item,
                 'metal_type': selected_metal_type,
                 'wood_type': selected_wood_type,
-                'fabric_type': selected_fabric_type, # Nowe
-                'leather_type': selected_leather_type, # Nowe
+                'fabric_type': selected_fabric_type,
+                'leather_type': selected_leather_type,
                 'quantity': quantity,
-                'resources': total_item_resources, # Zasoby ogolne dla tej pozycji
-                'predominant_material_display': predominant_material_for_display, # Material przewazajacy do eksportu
-                'is_enabled': True # Domyslnie element jest wlaczony
+                'resources': total_item_resources,
+                'predominant_material_display': predominant_material_for_display,
+                'is_enabled': True
             }
         )
-        self.shopping_list_widget.addItem(list_item) # Dodaj przygotowany element
-        self.unsaved_changes = True # Zmiana nastapila, ustaw flage
+        self.shopping_list_widget.addItem(list_item)
+        self.unsaved_changes = True
 
         self.quantity_input.clear()
-        self.calculate_totals() # Zaktualizuj sumy zasobow
+        self.calculate_totals()
 
     def handle_item_checked_state_changed(self, item):
         """
@@ -967,8 +942,8 @@ class ShoppingListApp(QWidget):
                     'article': item_data.get('article'),
                     'metal_type': item_data.get('metal_type'),
                     'wood_type': item_data.get('wood_type'),
-                    'fabric_type': item_data.get('fabric_type'), # Nowe
-                    'leather_type': item_data.get('leather_type'), # Nowe
+                    'fabric_type': item_data.get('fabric_type'),
+                    'leather_type': item_data.get('leather_type'),
                     'quantity': item_data.get('quantity'),
                     'is_enabled': item_data.get('is_enabled', True)
                 })
@@ -980,8 +955,6 @@ class ShoppingListApp(QWidget):
                 json.dump(data_to_save, f, indent=4)
             if show_message:
                 QMessageBox.information(self, "Zapisano", f"Dane zostaly zapisane do pliku: {os.path.basename(file_path)}")
-            # Po udanym zapisie, resetujemy flagę niezapisanych zmian.
-            # To jest kluczowa zmiana, aby aplikacja wiedziała, że stan jest aktualny.
             self.unsaved_changes = False
         except Exception as e:
             if show_message:
@@ -992,10 +965,7 @@ class ShoppingListApp(QWidget):
         Wczytuje stan listy zakupow z pliku JSON specyficznego dla kategorii.
         :param show_message: Czy wyswietlic QMessageBox po wczytaniu danych.
         """
-        # Uzyj self.current_active_category do wczytania danych
         file_path = self._get_data_file_path(category=self.current_active_category)
-        loaded_data = []
-
         if not os.path.exists(file_path):
             if show_message:
                 QMessageBox.information(self, "Wczytywanie", "Plik z danymi dla tej kategorii nie istnieje. Rozpoczeto pusta liste.")
@@ -1008,74 +978,55 @@ class ShoppingListApp(QWidget):
             with open(file_path, 'r', encoding='utf-8') as f:
                 loaded_data = json.load(f)
             
-            self.shopping_list_widget.clear() # Wyczyść biezaca liste przed wczytaniem
+            self.shopping_list_widget.clear()
 
             for i, item_data_raw in enumerate(loaded_data):
                 category = item_data_raw.get('category')
                 article = item_data_raw.get('article')
-                metal_type = item_data_raw.get('metal_type')
-                wood_type = item_data_raw.get('wood_type')
-                fabric_type = item_data_raw.get('fabric_type', self.NO_MATERIAL_OPTION) # Nowe, z domyslna wartoscia
-                leather_type = item_data_raw.get('leather_type', self.NO_MATERIAL_OPTION) # Nowe, z domyslna wartoscia
                 quantity = item_data_raw.get('quantity')
-                is_enabled = item_data_raw.get('is_enabled', True)
 
-                if not all([article, isinstance(quantity, int)]):
-                    print(f"Ostrzezenie: Pominiento niekompletny wpis: {item_data_raw}")
+                if not all([category, article, isinstance(quantity, int)]):
                     continue
 
-                # Upewnij sie, ze CRAFTING_RESOURCES zawiera nowe klucze dla tkaniny i skory
-                category_resources = self.CRAFTING_RESOURCES.get(category, {})
-                item_resources_base = category_resources.get(article, {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0})
+                item_resources_base = self.CRAFTING_RESOURCES.get(category, {}).get(article, {})
+                total_item_resources = {resource: amount * quantity for resource, amount in item_resources_base.items()}
 
-                total_item_resources = {
-                    "sztaby": item_resources_base["sztaby"] * quantity,
-                    "deski": item_resources_base["deski"] * quantity,
-                    "klejnoty": item_resources_base["klejnoty"] * quantity,
-                    "tkanina": item_resources_base["tkanina"] * quantity, # Nowe
-                    "skora": item_resources_base["skora"] * quantity # Nowe
-                }
+                metal_type = item_data_raw.get('metal_type', self.NO_MATERIAL_OPTION)
+                wood_type = item_data_raw.get('wood_type', self.NO_MATERIAL_OPTION)
+                fabric_type = item_data_raw.get('fabric_type', self.NO_MATERIAL_OPTION)
+                leather_type = item_data_raw.get('leather_type', self.NO_MATERIAL_OPTION)
+                is_enabled = item_data_raw.get('is_enabled', True)
 
-                # Okreslenie przewazajacego materialu dla wyswietlenia i eksportu
                 predominant_material_for_display = self.NO_MATERIAL_OPTION
+                if item_resources_base:
+                    predominant_resource_name = max(item_resources_base, key=item_resources_base.get)
+                    if predominant_resource_name == 'sztaby' and metal_type != self.NO_MATERIAL_OPTION:
+                        predominant_material_for_display = metal_type
+                    elif predominant_resource_name == 'deski' and wood_type != self.NO_MATERIAL_OPTION:
+                        predominant_material_for_display = wood_type
+                    elif predominant_resource_name == 'tkanina' and fabric_type != self.NO_MATERIAL_OPTION:
+                        predominant_material_for_display = fabric_type
+                    elif predominant_resource_name == 'skora' and leather_type != self.NO_MATERIAL_OPTION:
+                        predominant_material_for_display = leather_type
+                    else:
+                        predominant_material_for_display = predominant_resource_name
 
-                material_candidates = []
-                if item_resources_base["sztaby"] > 0 and metal_type != self.NO_MATERIAL_OPTION:
-                    material_candidates.append((item_resources_base["sztaby"], metal_type))
-                if item_resources_base["deski"] > 0 and wood_type != self.NO_MATERIAL_OPTION:
-                    material_candidates.append((item_resources_base["deski"], wood_type))
-                if item_resources_base["tkanina"] > 0 and fabric_type != self.NO_MATERIAL_OPTION:
-                    material_candidates.append((item_resources_base["tkanina"], fabric_type))
-                if item_resources_base["skora"] > 0 and leather_type != self.NO_MATERIAL_OPTION:
-                    material_candidates.append((item_resources_base["skora"], leather_type))
-                
-                # Klejnoty są materiałem, ale nie mają "typu" jak drewno czy metal, więc używamy nazwy "klejnoty"
-                if item_resources_base["klejnoty"] > 0:
-                    material_candidates.append((item_resources_base["klejnoty"], "klejnoty"))
-
-                if material_candidates:
-                    predominant_material_for_display = max(material_candidates, key=lambda x: x[0])[1]
-                
                 display_text = f"{i + 1}. {article} ({predominant_material_for_display}) - Ilosc: {quantity}"
                 display_text += f" [Kategoria: {category}]"
-                display_text += f" [Sztaby: {metal_type}]"
-                display_text += f" [Deski: {wood_type}]"
-                display_text += f" [Tkanina: {fabric_type}]" # Nowe
-                display_text += f" [Skora: {leather_type}]" # Nowe
+                if item_resources_base.get("sztaby", 0) > 0: display_text += f" [Sztaby: {metal_type}]"
+                if item_resources_base.get("deski", 0) > 0: display_text += f" [Deski: {wood_type}]"
+                if item_resources_base.get("tkanina", 0) > 0: display_text += f" [Tkanina: {fabric_type}]"
+                if item_resources_base.get("skora", 0) > 0: display_text += f" [Skora: {leather_type}]"
 
                 new_list_item = QListWidgetItem(display_text)
                 new_list_item.setFlags(new_list_item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
                 new_list_item.setCheckState(Qt.CheckState.Checked if is_enabled else Qt.CheckState.Unchecked)
 
                 new_list_item.setData(Qt.ItemDataRole.UserRole, {
-                    'category': category,
-                    'article': article,
-                    'metal_type': metal_type,
-                    'wood_type': wood_type,
-                    'fabric_type': fabric_type, # Nowe
-                    'leather_type': leather_type, # Nowe
-                    'quantity': quantity,
-                    'resources': total_item_resources,
+                    'category': category, 'article': article,
+                    'metal_type': metal_type, 'wood_type': wood_type,
+                    'fabric_type': fabric_type, 'leather_type': leather_type,
+                    'quantity': quantity, 'resources': total_item_resources,
                     'predominant_material_display': predominant_material_for_display,
                     'is_enabled': is_enabled
                 })
@@ -1086,22 +1037,10 @@ class ShoppingListApp(QWidget):
             if show_message:
                 QMessageBox.information(self, "Wczytano", "Dane zostaly wczytane pomyslnie.")
             self.unsaved_changes = False
-        except json.JSONDecodeError as e:
-            if show_message:
-                QMessageBox.critical(self, "Blad Wczytywania", f"Blad dekodowania pliku JSON: {e}")
-            self.unsaved_changes = True
-        except Exception as e:
+        except (json.JSONDecodeError, Exception) as e:
             if show_message:
                 QMessageBox.critical(self, "Blad Wczytywania", f"Wystapil blad podczas wczytywania danych: {e}")
             self.unsaved_changes = True
-
-    def load_data_on_startup(self):
-        """
-        Wczytuje dane przy starcie aplikacji, ale bez wyswietlania komunikatu
-        jesli plik nie istnieje lub wystapia bledy.
-        Ta metoda jest wywolywana tylko raz na starcie, aby zaladowac poczatkowa liste.
-        """
-        self.load_data(show_message=False)
 
 
     def export_list_to_file(self):
@@ -1118,26 +1057,14 @@ class ShoppingListApp(QWidget):
                     item = self.shopping_list_widget.item(i)
                     item_data = item.data(Qt.ItemDataRole.UserRole)
                     
-                    # Pomijaj wylaczone elementy
-                    if item_data and not item_data.get('is_enabled', True):
+                    if not (item_data and item_data.get('is_enabled', True)):
                         continue
 
                     article = item_data.get('article', 'Nieznany artykul')
-                    # Uzyj predominant_material_display do eksportu jako "kolor"
                     predominant_material = item_data.get('predominant_material_display', self.NO_MATERIAL_OPTION)
                     quantity = item_data.get('quantity', 0)
-                    fabric_type = item_data.get('fabric_type', self.NO_MATERIAL_OPTION)
-                    leather_type = item_data.get('leather_type', self.NO_MATERIAL_OPTION)
-
-                    # Budowanie linii do eksportu dynamicznie
-                    parts = [article, predominant_material, str(quantity)]
                     
-                    # Dodaj fabric_type i leather_type tylko jesli nie sa "Brak materialu"
-                    if fabric_type != self.NO_MATERIAL_OPTION:
-                        parts.append(fabric_type)
-                    if leather_type != self.NO_MATERIAL_OPTION:
-                        parts.append(leather_type)
-
+                    parts = [article, predominant_material, str(quantity)]
                     f.write(";".join(parts) + "\n")
             
             QMessageBox.information(self, "Eksport Zakonczony", f"Lista zostala pomyslnie wyeksportowana do pliku:\n{os.path.basename(file_path)}")
@@ -1149,137 +1076,90 @@ class ShoppingListApp(QWidget):
         Odwraca stan zaznaczenia wszystkich elementow na liscie:
         wlaczone staja sie wylaczone, a wylaczone staja sie wlaczone.
         """
-        # Odłącz sygnał, aby uniknąć wielokrotnego wywoływania calculate_totals
         self.shopping_list_widget.itemChanged.disconnect(self.handle_item_checked_state_changed)
 
         for i in range(self.shopping_list_widget.count()):
             item = self.shopping_list_widget.item(i)
             current_state = item.checkState()
-            if current_state == Qt.CheckState.Checked:
-                item.setCheckState(Qt.CheckState.Unchecked)
-            else:
-                item.setCheckState(Qt.CheckState.Checked)
+            new_check_state = Qt.CheckState.Unchecked if current_state == Qt.CheckState.Checked else Qt.CheckState.Checked
+            item.setCheckState(new_check_state)
             
-            # Ręcznie zaktualizuj dane elementu, ponieważ sygnał jest odłączony
             item_data = item.data(Qt.ItemDataRole.UserRole)
             if item_data:
-                item_data['is_enabled'] = (item.checkState() == Qt.CheckState.Checked)
+                item_data['is_enabled'] = (new_check_state == Qt.CheckState.Checked)
                 item.setData(Qt.ItemDataRole.UserRole, item_data)
-                self.update_item_visual_state(item) # Zaktualizuj wyglad wizualny
+                self.update_item_visual_state(item)
 
-        # Ponownie podłącz sygnał
         self.shopping_list_widget.itemChanged.connect(self.handle_item_checked_state_changed)
         
-        self.unsaved_changes = True # Zmiana nastapila, ustaw flage
-        self.calculate_totals() # Przelicz sumy raz po wszystkich zmianach
+        self.unsaved_changes = True
+        self.calculate_totals()
 
     def calculate_totals(self):
         """
-        Oblicza sume zasobow dla wszystkich artykulow na liscie (globalnie)
-        oraz sumy dla poszczegolnych typow sztab i desek, aktualizujac etykiety i QTextBrowser.
-        Pominiete zostaja elementy wylaczone (odznaczone na liscie).
+        Oblicza i wyswietla sumy wszystkich wymaganych zasobow.
+        Obsluguje dynamiczne typy zasobow i sumy dla poszczegolnych typow materialow.
         """
-        total_sztaby_global = 0
-        total_deski_global = 0
-        total_klejnoty_global = 0
-        total_tkanina_global = 0 # Nowe
-        total_skora_global = 0 # Nowe
-        
-        # Slowniki do przechowywania sum zasobow dla kazdego typu materialu
-        metal_type_totals = {metal: 0 for metal in self.METAL_TYPES}
-        wood_type_totals = {wood: 0 for wood in self.WOOD_TYPES}
-        fabric_type_totals = {fabric: 0 for fabric in self.FABRIC_TYPES} # Nowe
-        leather_type_totals = {leather: 0 for leather in self.LEATHER_TYPES} # Nowe
+        global_totals = defaultdict(int)
+        metal_type_totals = defaultdict(int)
+        wood_type_totals = defaultdict(int)
+        fabric_type_totals = defaultdict(int)
+        leather_type_totals = defaultdict(int)
 
         for i in range(self.shopping_list_widget.count()):
             item = self.shopping_list_widget.item(i)
             item_data = item.data(Qt.ItemDataRole.UserRole)
             
-            # Pomijaj wylaczone elementy w obliczeniach
-            if item_data and not item_data.get('is_enabled', True):
+            if not (item_data and item_data.get('is_enabled', True)):
                 continue
 
-            if item_data and 'resources' in item_data:
-                resources_for_item = item_data['resources']
-                selected_metal_type = item_data.get('metal_type')
-                selected_wood_type = item_data.get('wood_type')
-                selected_fabric_type = item_data.get('fabric_type') # Nowe
-                selected_leather_type = item_data.get('leather_type') # Nowe
+            resources_for_item = item_data.get('resources', {})
+            for resource_name, total_amount in resources_for_item.items():
+                global_totals[resource_name] += total_amount
 
-                # Sumowanie globalne
-                total_sztaby_global += resources_for_item.get('sztaby', 0)
-                total_deski_global += resources_for_item.get('deski', 0)
-                total_klejnoty_global += resources_for_item.get('klejnoty', 0)
-                total_tkanina_global += resources_for_item.get('tkanina', 0) # Nowe
-                total_skora_global += resources_for_item.get('skora', 0) # Nowe
+            selected_metal_type = item_data.get('metal_type')
+            if selected_metal_type != self.NO_MATERIAL_OPTION:
+                metal_type_totals[selected_metal_type] += resources_for_item.get('sztaby', 0)
+            
+            selected_wood_type = item_data.get('wood_type')
+            if selected_wood_type != self.NO_MATERIAL_OPTION:
+                wood_type_totals[selected_wood_type] += resources_for_item.get('deski', 0)
 
-                # Sumowanie wedlug typu materialu (jesli wybrano konkretny typ i nie jest "Brak materialu")
-                if selected_metal_type != self.NO_MATERIAL_OPTION and selected_metal_type in metal_type_totals:
-                    metal_type_totals[selected_metal_type] += resources_for_item.get('sztaby', 0)
-                
-                if selected_wood_type != self.NO_MATERIAL_OPTION and selected_wood_type in wood_type_totals:
-                    wood_type_totals[selected_wood_type] += resources_for_item.get('deski', 0)
+            selected_fabric_type = item_data.get('fabric_type')
+            if selected_fabric_type != self.NO_MATERIAL_OPTION:
+                fabric_type_totals[selected_fabric_type] += resources_for_item.get('tkanina', 0)
+            
+            selected_leather_type = item_data.get('leather_type')
+            if selected_leather_type != self.NO_MATERIAL_OPTION:
+                leather_type_totals[selected_leather_type] += resources_for_item.get('skora', 0)
 
-                if selected_fabric_type != self.NO_MATERIAL_OPTION and selected_fabric_type in fabric_type_totals: # Nowe
-                    fabric_type_totals[selected_fabric_type] += resources_for_item.get('tkanina', 0)
-                
-                if selected_leather_type != self.NO_MATERIAL_OPTION and selected_leather_type in leather_type_totals: # Nowe
-                    leather_type_totals[selected_leather_type] += resources_for_item.get('skora', 0)
-        
-        # Zaktualizuj tekst etykiet globalnych
-        self.total_sztaby_label.setText(f"Sztaby (suma): {total_sztaby_global}")
-        self.total_deski_label.setText(f"Deski (suma): {total_deski_global}")
-        self.total_klejnoty_label.setText(f"Klejnoty (suma): {total_klejnoty_global}")
-        self.total_tkanina_label.setText(f"Tkanina (suma): {total_tkanina_global}") # Nowe
-        self.total_skora_label.setText(f"Skora (suma): {total_skora_global}") # Nowe
+        global_html = "<ul>"
+        if not global_totals:
+            global_html += "<li>Brak wymaganych zasobów.</li>"
+        else:
+            for resource_name, total_qty in sorted(global_totals.items()):
+                global_html += f"<li><b>{resource_name.replace('_', ' ').capitalize()}:</b> {total_qty}</li>"
+        global_html += "</ul>"
+        self.global_totals_display.setHtml(global_html)
 
-        # Zaktualizuj QTextBrowser dla sum wedlug typu materialu
-        material_html = "<h3>Sztaby i deski wg typu materialu:</h3>"
-        
-        # Sekcja dla sztab
-        material_html += "<h4>Sztaby:</h4>"
-        has_metal_totals = False
-        for metal_type in self.METAL_TYPES: # Iteruj po wszystkich mozliwych typach, zeby pokazac nawet 0
-            total_qty = metal_type_totals.get(metal_type, 0)
-            if total_qty > 0:
-                has_metal_totals = True
-                material_html += f"<p><b>{metal_type}:</b> {total_qty}</p>"
-        if not has_metal_totals:
-            material_html += "<p>Brak wymagan na sztaby.</p>"
+        material_html = ""
+        sections = {
+            "Sztaby": (self.METAL_TYPES, metal_type_totals),
+            "Deski": (self.WOOD_TYPES, wood_type_totals),
+            "Tkanina": (self.FABRIC_TYPES, fabric_type_totals),
+            "Skora": (self.LEATHER_TYPES, leather_type_totals)
+        }
 
-        # Sekcja dla desek
-        material_html += "<h4>Deski:</h4>"
-        has_wood_totals = False
-        for wood_type in self.WOOD_TYPES: # Iteruj po wszystkich mozliwych typach, zeby pokazac nawet 0
-            total_qty = wood_type_totals.get(wood_type, 0)
-            if total_qty > 0:
-                has_wood_totals = True
-                material_html += f"<p><b>{wood_type}:</b> {total_qty}</p>"
-        if not has_wood_totals:
-            material_html += "<p>Brak wymagan na deski.</p>"
-
-        # Sekcja dla tkanin (Nowe)
-        material_html += "<h4>Tkanina:</h4>"
-        has_fabric_totals = False
-        for fabric_type in self.FABRIC_TYPES:
-            total_qty = fabric_type_totals.get(fabric_type, 0)
-            if total_qty > 0:
-                has_fabric_totals = True
-                material_html += f"<p><b>{fabric_type}:</b> {total_qty}</p>"
-        if not has_fabric_totals:
-            material_html += "<p>Brak wymagan na tkanine.</p>"
-
-        # Sekcja dla skór (Nowe)
-        material_html += "<h4>Skora:</h4>"
-        has_leather_totals = False
-        for leather_type in self.LEATHER_TYPES:
-            total_qty = leather_type_totals.get(leather_type, 0)
-            if total_qty > 0:
-                has_leather_totals = True
-                material_html += f"<p><b>{leather_type}:</b> {total_qty}</p>"
-        if not has_leather_totals:
-            material_html += "<p>Brak wymagan na skore.</p>"
-
+        for title, (types, totals) in sections.items():
+            material_html += f"<h4>{title}:</h4>"
+            has_totals = False
+            for material_type in types:
+                total_qty = totals.get(material_type, 0)
+                if total_qty > 0:
+                    has_totals = True
+                    material_html += f"<p><b>{material_type}:</b> {total_qty}</p>"
+            if not has_totals:
+                material_html += "<p>Brak.</p>"
 
         self.material_totals_display.setHtml(material_html)
 
@@ -1324,3 +1204,4 @@ if __name__ == '__main__':
     
     ex.show()
     sys.exit(app.exec())
+
