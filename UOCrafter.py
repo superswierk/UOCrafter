@@ -149,6 +149,46 @@ class ShoppingListApp(QWidget):
             "krysztal_sily": {"magiczny_proszek": 10, "perla": 1},
             "zwoj_madrosci": {"pusty_zwoj": 1, "atrament": 5, "pyl_many": 20},
             "ulepszenie_miecza": {"ostrze_miecza": 1, "krysztal_ognia": 3, "runa_mocy": 1}
+        },
+        "Platnerstwo": {
+            "czekaj": {"sztaby": 0, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "nogawice": {"sztaby": 18, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "kolczuga": {"sztaby": 20, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "pierscienowa_tunika": {"sztaby": 18, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "piescieniowe_naramienniki": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "pierscieniowe_nogawice": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "piescieniowe_rekawice": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_naramienniki": {"sztaby": 18, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_nogawice": {"sztaby": 20, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowy_kraczek": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_rekawice": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowa_zbroja": {"sztaby": 24, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowa_damska_zbroja": {"sztaby": 20, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "czepiec": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "zamkniety_helm": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "otwarty_helm": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "helm": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "helm_nosowy": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "helm_plytowy": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "helm_kruka": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "helm_szakala": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "skrzydlaty_helm": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "okragla_tarcza": {"sztaby": 12, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "puklerz": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "trojkatna_tarcza": {"sztaby": 16, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "pawez": {"sztaby": 18, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "metalowa_tarcza": {"sztaby": 14, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_mempo": {"sztaby": 10, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_do": {"sztaby": 25, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_hiro_sode": {"sztaby": 18, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_kabuto": {"sztaby": 15, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "plytowe_suneate": {"sztaby": 20, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "elfia_plytowa_zbroja": {"sztaby": 22, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "elfi_plytowy_karczek": {"sztaby": 7, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "elfie_plytowe_rekawice": {"sztaby": 11, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "elfie_plytowe_nogawice": {"sztaby": 22, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "elfie_plytowe_naramienniki": {"sztaby": 20, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0},
+            "efia_plytowa_damska_zbroja": {"sztaby": 22, "deski": 0, "klejnoty": 0, "tkanina": 0, "skora": 0}
         }
     }
 
@@ -1063,8 +1103,9 @@ class ShoppingListApp(QWidget):
                     article = item_data.get('article', 'Nieznany artykul')
                     predominant_material = item_data.get('predominant_material_display', self.NO_MATERIAL_OPTION)
                     quantity = item_data.get('quantity', 0)
+                    total_item_resources = sum(item_data.get('resources', {}).values())
                     
-                    parts = [article, predominant_material, str(quantity)]
+                    parts = [article, predominant_material, str(quantity), str(total_item_resources/quantity)]
                     f.write(";".join(parts) + "\n")
             
             QMessageBox.information(self, "Eksport Zakonczony", f"Lista zostala pomyslnie wyeksportowana do pliku:\n{os.path.basename(file_path)}")
@@ -1204,4 +1245,3 @@ if __name__ == '__main__':
     
     ex.show()
     sys.exit(app.exec())
-
